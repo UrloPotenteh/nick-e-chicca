@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick 💘 Chicca</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #e8a0a8;
+    --rose-deep: #c4687a;
+    --rose-light: #f5d0d6;
+    --blush: #fdf0f2;
+    --green: #7a9e7e;
+    --green-light: #b5ceb8;
+    --cream: #fdf6f0;
+    --gold: #c9a96e;
+    --text: #3d2b2b;
+    --text-light: #7a5c5c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--blush);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  .petal-container {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .petal {
+    position: absolute; top: -60px;
+    width: 18px; height: 22px;
+    background: radial-gradient(ellipse at 40% 30%, #f7c5cc, #e8a0a8cc);
+    border-radius: 80% 0 80% 0;
+    opacity: 0; animation: fall linear infinite;
+    filter: drop-shadow(0 2px 4px #e8a0a855);
+  }
+  @keyframes fall {
+    0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 0; }
+    5%   { opacity: 0.4; }
+    90%  { opacity: 0.25; }
+    100% { transform: translateY(110vh) rotate(540deg) scale(0.7); opacity: 0; }
+  }
+
+  .heart-container {
+    position: fixed; bottom: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 1; overflow: hidden;
+  }
+  .floating-heart {
+    position: absolute; bottom: -60px;
+    font-size: 24px; opacity: 0;
+    animation: riseHeart linear infinite;
+  }
+  @keyframes riseHeart {
+    0%   { transform: translateY(0) scale(0.5) rotate(-10deg); opacity: 0; }
+    10%  { opacity: 0.4; }
+    80%  { opacity: 0.2; }
+    100% { transform: translateY(-110vh) scale(1.2) rotate(10deg); opacity: 0; }
+  }
+
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 40px 20px; z-index: 2;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, #f5d0d688 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, #b5ceb855 0%, transparent 60%),
+      var(--blush);
+  }
+  .hero-emoji {
+    font-size: clamp(3rem, 10vw, 6rem);
+    animation: pulse 2.5s ease-in-out infinite;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 20px #e8a0a888);
+  }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  .hero-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2.8rem, 9vw, 6rem);
+    color: var(--rose-deep);
+    text-shadow: 0 2px 20px #e8a0a855;
+    line-height: 1.1;
+    animation: fadeUp 1.2s ease both;
+  }
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    color: var(--text-light);
+    margin-top: 12px; letter-spacing: 0.08em;
+    animation: fadeUp 1.4s ease both;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .timer-section {
+    position: relative; z-index: 2;
+    text-align: center; padding: 20px 20px 10px;
+    animation: fadeUp 1.6s ease both;
+  }
+  .timer-label {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+    color: var(--text-light); letter-spacing: 0.1em; margin-bottom: 16px;
+  }
+  .timer-grid { display: flex; justify-content: center; gap: clamp(8px, 2vw, 24px); flex-wrap: wrap; }
+  .timer-block {
+    background: white; border: 1.5px solid var(--rose-light);
+    border-radius: 16px; padding: clamp(10px,2vw,18px) clamp(12px,2.5vw,22px);
+    min-width: clamp(56px,12vw,80px);
+    box-shadow: 0 4px 20px #e8a0a822; transition: transform 0.3s ease;
+  }
+  .timer-block:hover { transform: translateY(-4px); }
+  .timer-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    color: var(--rose-deep); display: block; line-height: 1;
+    transition: all 0.3s ease;
+  }
+  .timer-unit {
+    font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+    color: var(--text-light); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-top: 4px; display: block;
+  }
+
+  .divider {
+    text-align: center; font-size: 1.5rem;
+    color: var(--green); letter-spacing: 0.5em;
+    padding: 24px 0 8px; opacity: 0.7; position: relative; z-index: 2;
+  }
+
+  .section {
+    position: relative; z-index: 2;
+    max-width: 780px; margin: 0 auto; padding: 20px 24px 40px;
+  }
+  .section-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2rem, 6vw, 3rem);
+    color: var(--rose-deep); text-align: center; margin-bottom: 32px;
+  }
+
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, var(--rose-light), var(--green-light), var(--rose-light));
+    border-radius: 2px;
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 36px; padding-left: 24px;
+    opacity: 0; transform: translateX(-20px); transition: all 0.6s ease;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-dot {
+    position: absolute; left: -30px; top: 6px;
+    width: 14px; height: 14px; background: var(--rose);
+    border: 3px solid white; border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--rose-light);
+  }
+  .timeline-date { font-style: italic; font-size: 0.85rem; color: var(--green); letter-spacing: 0.1em; margin-bottom: 4px; }
+  .timeline-title { font-family: 'Playfair Display', serif; font-size: clamp(1rem,2.5vw,1.25rem); color: var(--text); margin-bottom: 6px; }
+  .timeline-text { font-size: clamp(0.9rem,2vw,1.05rem); color: var(--text-light); line-height: 1.7; }
+
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 8px; }
+  .photo-slot {
+    aspect-ratio: 1; border-radius: 18px;
+    border: 2px dashed var(--rose-light); background: white;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; color: var(--rose); font-size: 0.95rem; font-style: italic;
+    cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+  }
+  .photo-slot:hover { border-color: var(--rose); background: var(--rose-light); transform: scale(1.02); }
+  .photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; position: absolute; top: 0; left: 0; }
+  .photo-slot .upload-label { pointer-events: none; text-align: center; padding: 10px; }
+  .photo-slot input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .photo-icon { font-size: 2rem; }
+
+  .love-message-section {
+    position: relative; z-index: 2; text-align: center; padding: 40px 24px;
+    background: linear-gradient(135deg, #fff5f7, #f0f7f1);
+    margin: 0 16px; border-radius: 32px;
+    border: 1.5px solid var(--rose-light);
+    max-width: 720px; margin: 0 auto 60px;
+  }
+  .love-quote {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--rose-deep); line-height: 1.5; margin-bottom: 16px;
+  }
+  .love-from { font-style: italic; color: var(--text-light); font-size: 1rem; letter-spacing: 0.08em; }
+  .love-edit-btn {
+    margin-top: 20px; background: var(--rose); color: white; border: none;
+    border-radius: 50px; padding: 10px 28px;
+    font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+    cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.05em;
+  }
+  .love-edit-btn:hover { background: var(--rose-deep); transform: scale(1.05); }
+  .love-textarea {
+    width: 100%; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+    border: 1.5px solid var(--rose-light); border-radius: 16px; padding: 16px;
+    resize: vertical; min-height: 120px; color: var(--text); outline: none;
+    margin-top: 12px; display: none;
+  }
+  .love-textarea:focus { border-color: var(--rose); }
+  .love-save-btn {
+    margin-top: 12px; background: var(--green); color: white; border: none;
+    border-radius: 50px; padding: 10px 28px;
+    font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+    cursor: pointer; transition: all 0.3s ease; display: none;
+  }
+  .love-save-btn:hover { background: var(--green-light); }
+
+  /* SONDAGGIO */
+  .poll-options { display: flex; flex-direction: column; gap: 12px; }
+  .poll-option-btn {
+    background: white; border: 2px solid var(--rose-light);
+    border-radius: 16px; padding: 16px 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: var(--text); cursor: pointer; transition: all 0.3s ease;
+    text-align: left; width: 100%;
+  }
+  .poll-option-btn:hover:not(:disabled) { border-color: var(--rose); background: var(--rose-light); transform: translateX(6px); }
+  .poll-option-btn.selected { border-color: var(--rose-deep); background: linear-gradient(135deg, #fff0f3, #fde8ec); font-weight: bold; }
+  .poll-result {
+    text-align: center; padding: 24px;
+    background: linear-gradient(135deg, #fff5f7, #f0f7f1);
+    border-radius: 20px; border: 1.5px solid var(--rose-light);
+    animation: fadeUp 0.6s ease; margin-top: 16px;
+  }
+  .poll-result-text { font-family: 'Great Vibes', cursive; font-size: clamp(1.5rem,4vw,2rem); color: var(--rose-deep); }
+  .poll-result-sub { font-style: italic; color: var(--text-light); margin-top: 6px; font-size: 0.95rem; }
+  .poll-reset-btn {
+    display: block; margin: 16px auto 0; background: none;
+    border: 1.5px solid var(--rose-light); border-radius: 50px;
+    padding: 8px 20px; font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem; color: var(--text-light); cursor: pointer; transition: all 0.3s ease;
+  }
+  .poll-reset-btn:hover { border-color: var(--rose); color: var(--rose-deep); }
+  .nick-toggle-btn {
+    background: none; border: 1.5px dashed var(--rose-light); border-radius: 50px;
+    padding: 8px 22px; font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem; color: var(--text-light); cursor: pointer;
+    transition: all 0.3s ease; letter-spacing: 0.05em;
+  }
+  .nick-toggle-btn:hover { border-color: var(--rose); color: var(--rose-deep); }
+  .nick-box { background: white; border: 1.5px solid var(--rose-light); border-radius: 20px; padding: 24px; text-align: center; }
+  .nick-input {
+    width: 100%; font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+    border: 1.5px solid var(--rose-light); border-radius: 12px; padding: 10px 14px;
+    outline: none; color: var(--text); background: var(--blush);
+  }
+  .nick-input:focus { border-color: var(--rose); }
+  .nick-label { display: block; text-align: left; font-style: italic; color: var(--text-light); font-size: 0.9rem; margin-bottom: 4px; }
+
+  .music-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 100;
+    background: white; border: 2px solid var(--rose-light); border-radius: 50%;
+    width: 56px; height: 56px; font-size: 1.6rem; cursor: pointer;
+    box-shadow: 0 4px 20px #e8a0a844; transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .music-btn:hover { transform: scale(1.1); background: var(--rose-light); }
+  .music-btn.playing { animation: spinSlow 4s linear infinite; }
+  @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .footer {
+    position: relative; z-index: 2; text-align: center; padding: 40px 20px;
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--rose-deep); opacity: 0.8;
+  }
+
+
+
+  @media (max-width: 480px) {
+    .timer-grid { gap: 6px; }
+    .section { padding: 16px 16px 32px; }
+    .love-message-section { margin: 0 8px 40px; }
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen" style="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;overflow:hidden;">
+  <!-- Sfondo Lucky visibile -->
+  <img src="https://i.imgur.com/1cqpDVr.jpeg" alt="Lucky" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:brightness(0.72);z-index:0;">
+  <!-- Overlay gradiente leggero solo in basso -->
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(253,240,242,0.45) 70%,rgba(253,240,242,0.75) 100%);z-index:1;"></div>
+  <!-- Contenuto -->
+  <div style="position:relative;z-index:2;max-width:380px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding-bottom:clamp(32px,8vh,80px);">
+    <h1 style="font-family:'Great Vibes',cursive;font-size:clamp(2.8rem,11vw,5rem);color:white;text-shadow:0 2px 24px #00000066,0 0 40px #c4687a66;margin-bottom:16px;line-height:1.1;">Nick & Chicca</h1>
+    <div style="background:rgba(255,255,255,0.88);border:1.5px solid #f5d0d6;border-radius:24px;padding:28px 24px;box-shadow:0 8px 40px #e8a0a844;backdrop-filter:blur(12px);width:100%;">
+      <p style="font-family:'Playfair Display',serif;font-size:1.05rem;color:#3d2b2b;margin-bottom:18px;">Come si chiama la nostra mascotte?</p>
+      <input id="lockInput" type="text" placeholder="scrivi qui..." style="width:100%;font-family:'Cormorant Garamond',serif;font-size:1.15rem;border:1.5px solid #f5d0d6;border-radius:12px;padding:12px 16px;outline:none;color:#3d2b2b;text-align:center;letter-spacing:0.05em;margin-bottom:12px;background:white;transition:border-color 0.3s,transform 0.1s;" onkeydown="if(event.key==='Enter')checkLock()">
+      <p id="lockError" style="color:#c4687a;font-size:0.9rem;font-style:italic;margin-bottom:12px;display:none;">Risposta non corretta, riprova 🌸</p>
+      <button onclick="checkLock()" style="background:#e8a0a8;color:white;border:none;border-radius:50px;padding:12px 36px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;cursor:pointer;letter-spacing:0.05em;transition:all 0.3s;width:100%;" onmouseover="this.style.background='#c4687a'" onmouseout="this.style.background='#e8a0a8'">Entra ✨</button>
+    </div>
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.85rem;color:rgba(255,255,255,0.85);margin-top:16px;text-shadow:0 1px 4px #00000055;">fatto con amore da Nick 💘</p>
+  </div>
+</div>
+
+
+<div class="petal-container" id="petalContainer"></div>
+<div class="heart-container" id="heartContainer"></div>
+<button class="music-btn" id="musicBtn" title="Musica">🎵</button>
+<audio id="bgMusic" loop><source src="" type="audio/mp3"></audio>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 class="hero-names">Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.85em;height:0.85em;vertical-align:middle;" alt="💘"> Chicca</h1>
+  <p class="hero-subtitle">la nostra storia d'amore</p>
+</section>
+
+<!-- TIMER -->
+<section class="timer-section">
+  <p class="timer-label"><img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Insieme da <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></p>
+  <div class="timer-grid">
+    <div class="timer-block"><span class="timer-num" id="t-giorni">0</span><span class="timer-unit">giorni</span></div>
+    <div class="timer-block"><span class="timer-num" id="t-ore">0</span><span class="timer-unit">ore</span></div>
+    <div class="timer-block"><span class="timer-num" id="t-min">0</span><span class="timer-unit">minuti</span></div>
+    <div class="timer-block"><span class="timer-num" id="t-sec">0</span><span class="timer-unit">secondi</span></div>
+  </div>
+</section>
+
+<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div>
+
+<!-- STORIA -->
+<section class="section">
+  <h2 class="section-title">La nostra storia</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">8 gennaio 2026</div>
+      <div class="timeline-title">Il nostro inizio <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;" alt="💘"></div>
+      <div class="timeline-text">Il giorno in cui tutto è cambiato — il giorno in cui sei diventata mia e io tuo. Qui aggiungete la vostra storia...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Un momento speciale <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div>
+      <div class="timeline-text">Racconta qui un ricordo che volete custodire per sempre...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div>
+      <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div>
+
+<!-- FOTO -->
+<section class="section">
+  <h2 class="section-title">I nostri ricordi</h2>
+  <div class="gallery">
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div><span>Aggiungi una foto</span></div></div>
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/camera-with-flash_1f4f8.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div><span>Aggiungi una foto</span></div></div>
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/two-hearts_1f495.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div><span>Aggiungi una foto</span></div></div>
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div><span>Aggiungi una foto</span></div></div>
+  </div>
+</section>
+
+<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div>
+
+<!-- MESSAGGIO -->
+<section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
+  <div class="love-message-section">
+    <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
+    <p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
+    <p class="love-from">— Il tuo Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;" alt="💘"></p>
+    <button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Scrivi messaggio</button>
+    <textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
+    <button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Salva</button>
+  </div>
+</section>
+
+<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div>
+
+<!-- SONDAGGIO -->
+<section class="section" style="max-width:680px;">
+  <h2 class="section-title">Cosa vuoi fare?</h2>
+  <div id="pollQuestion" style="text-align:center;font-style:italic;font-size:clamp(1.1rem,3vw,1.35rem);color:var(--text-light);margin-bottom:24px;">Dove vuoi uscire questo weekend?</div>
+  <div id="pollOptions" class="poll-options"></div>
+  <div id="pollResult" class="poll-result" style="display:none;"></div>
+  <button class="poll-reset-btn" id="pollResetBtn" style="display:none;" onclick="resetVote()"><img src="https://em-content.zobj.net/source/apple/453/counterclockwise-arrows-button_1f504.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Cambia risposta</button>
+  <div style="text-align:center;margin-top:32px;">
+    <button class="nick-toggle-btn" onclick="toggleNickPanel()"><img src="https://em-content.zobj.net/source/apple/453/locked_1f512.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Pannello Nick</button>
+  </div>
+  <div id="nickPanel" style="display:none;margin-top:20px;">
+    <div id="nickPinArea" class="nick-box">
+      <p style="font-style:italic;color:var(--text-light);margin-bottom:12px;">Inserisci il PIN per accedere</p>
+      <input type="password" id="nickPinInput" class="nick-input" placeholder="PIN segreto" maxlength="6">
+      <button class="love-edit-btn" style="margin-top:12px;" onclick="checkPin()">Accedi</button>
+      <p id="pinError" style="color:var(--rose-deep);margin-top:8px;font-size:0.9rem;display:none;">PIN errato ❌</p>
+    </div>
+    <div id="nickEditor" style="display:none;" class="nick-box">
+      <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:16px;"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Modifica il sondaggio</p>
+      <label class="nick-label">Domanda</label>
+      <input type="text" id="editQuestion" class="nick-input" placeholder="Es. Dove vuoi uscire questo weekend?">
+      <label class="nick-label" style="margin-top:12px;">Opzione 1</label>
+      <input type="text" id="editOpt1" class="nick-input" placeholder="Es. 🍕 Pizzeria">
+      <label class="nick-label" style="margin-top:8px;">Opzione 2</label>
+      <input type="text" id="editOpt2" class="nick-input" placeholder="Es. 🎬 Cinema">
+      <label class="nick-label" style="margin-top:8px;">Opzione 3</label>
+      <input type="text" id="editOpt3" class="nick-input" placeholder="Es. 🌊 Passeggiata al mare">
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+        <button class="love-edit-btn" onclick="savePoll()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Salva sondaggio</button>
+        <button class="love-save-btn" style="display:inline-block;" onclick="clearVoteAdmin()"><img src="https://em-content.zobj.net/source/apple/453/wastebasket_1f5d1-fe0f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Cancella risposta di Chicca</button>
+      </div>
+      <p id="saveMsg" style="color:var(--green);margin-top:10px;font-size:0.9rem;display:none;"><img src="https://em-content.zobj.net/source/apple/453/check-mark-button_2705.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Sondaggio aggiornato!</p>
+    </div>
+  </div>
+</section>
+
+<div class="footer">Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;" alt="💘"> Chicca — per sempre</div>
+
+<script>
+
+// LOCK SCREEN
+function checkLock() {
+  const val = document.getElementById('lockInput').value.trim().toLowerCase();
+  if (val === 'lucky') {
+    sessionStorage.setItem('unlocked', '1');
+    unlockWithTransition();
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('lockInput').style.borderColor = '#c4687a';
+    // scuoti il campo
+    const inp = document.getElementById('lockInput');
+    inp.style.transform = 'translateX(-8px)';
+    setTimeout(() => inp.style.transform = 'translateX(8px)', 80);
+    setTimeout(() => inp.style.transform = 'translateX(-6px)', 160);
+    setTimeout(() => inp.style.transform = 'translateX(6px)', 240);
+    setTimeout(() => { inp.style.transform = 'translateX(0)'; inp.style.borderColor = '#f5d0d6'; }, 320);
+  }
+}
+
+function unlockWithTransition() {
+  const ls = document.getElementById('lockScreen');
+  // Fase 1: mostra cuori che esplodono
+  for (let i = 0; i < 18; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      const emojis = ['💘','🌸','💕','✨','💖','🌹'];
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.cssText = `position:fixed;z-index:10001;pointer-events:none;font-size:${24+Math.random()*24}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;animation:burstHeart 0.9s ease forwards;`;
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 900);
+    }, i * 60);
+  }
+  // Fase 2: fade out bianco
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:white;opacity:0;transition:opacity 0.6s ease;pointer-events:none;';
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.style.opacity = '1', 400);
+  // Fase 3: rimuovi lock e overlay
+  setTimeout(() => {
+    ls.style.display = 'none';
+    overlay.style.transition = 'opacity 0.8s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 800);
+  }, 1000);
+}
+
+// CSS per burst
+const burstStyle = document.createElement('style');
+burstStyle.textContent = `@keyframes burstHeart { 0%{transform:scale(0) rotate(0deg);opacity:1;} 60%{transform:scale(1.4) rotate(20deg);opacity:1;} 100%{transform:scale(0.8) translateY(-60px) rotate(-10deg);opacity:0;} }`;
+document.head.appendChild(burstStyle);
+
+// Controlla se già sbloccato in questa sessione
+if (sessionStorage.getItem('unlocked') === '1') {
+  document.getElementById('lockScreen').style.display = 'none';
+}
+
+
+// PETALI
+const petalContainer = document.getElementById('petalContainer');
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.classList.add('petal');
+  const size = 14 + Math.random() * 14;
+  p.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size*1.2}px;animation-duration:${7+Math.random()*8}s;animation-delay:${-Math.random()*12}s;opacity:0;border-radius:${60+Math.random()*30}% 0 ${60+Math.random()*30}% 0;transform:rotate(${Math.random()*360}deg);`;
+  petalContainer.appendChild(p);
+}
+
+// CUORI
+const heartContainer = document.getElementById('heartContainer');
+const heartImgs = [
+  'pink-heart_1fa77','cherry-blossom_1f338','two-hearts_1f495',
+  'sparkling-heart_1f496','rose_1f339','heart-with-arrow_1f498'
+];
+function spawnHeart() {
+  const h = document.createElement('div');
+  h.classList.add('floating-heart');
+  const chosen = heartImgs[Math.floor(Math.random() * heartImgs.length)];
+  const imgEl = document.createElement('img');
+  imgEl.src = 'https://em-content.zobj.net/source/apple/453/' + chosen + '.png';
+  imgEl.style.cssText = 'width:1.2em;height:1.2em;';
+  h.appendChild(imgEl);
+  const size = 16 + Math.random() * 20;
+  const duration = 6 + Math.random() * 8;
+  h.style.cssText = `left:${5+Math.random()*90}%;font-size:${size}px;animation-duration:${duration}s;animation-delay:0s;`;
+  heartContainer.appendChild(h);
+  setTimeout(() => h.remove(), duration * 1000);
+}
+setInterval(spawnHeart, 900);
+
+// TIMER
+const start = new Date('2026-01-08T18:11:00');
+function updateTimer() {
+  const diff = new Date() - start;
+  if (diff < 0) return;
+  document.getElementById('t-giorni').textContent = Math.floor(diff/86400000);
+  document.getElementById('t-ore').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('t-min').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('t-sec').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+}
+updateTimer();
+setInterval(updateTimer, 1000);
+
+function animateNum(el, target) {
+  let current = 0;
+  const step = Math.ceil(target/40);
+  const iv = setInterval(() => { current = Math.min(current+step, target); el.textContent = current; if (current >= target) clearInterval(iv); }, 40);
+}
+setTimeout(() => animateNum(document.getElementById('t-giorni'), Math.floor((new Date()-start)/86400000)), 300);
+
+// SCROLL
+const observer = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.2 });
+document.querySelectorAll('.timeline-item').forEach(i => observer.observe(i));
+
+// FOTO
+function loadPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const slot = input.parentElement;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ex = slot.querySelector('img'); if (ex) ex.remove();
+    const img = document.createElement('img'); img.src = e.target.result;
+    slot.insertBefore(img, slot.firstChild);
+    slot.querySelector('.upload-label').style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// MESSAGGIO
+function toggleEdit() {
+  const ta = document.getElementById('loveTextarea');
+  const sb = document.getElementById('loveSaveBtn');
+  const eb = document.getElementById('loveEditBtn');
+  const show = ta.style.display !== 'block';
+  ta.style.display = show ? 'block' : 'none';
+  sb.style.display = show ? 'inline-block' : 'none';
+  eb.textContent = show ? '❌ Annulla' : '<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:1em;height:1em;vertical-align:middle;" alt=""> Scrivi messaggio';
+  if (show) { ta.value = document.getElementById('loveQuoteText').textContent.includes('Scrivi') ? '' : document.getElementById('loveQuoteText').textContent; ta.focus(); }
+}
+function saveMessage() {
+  const text = document.getElementById('loveTextarea').value.trim();
+  if (!text) return;
+  document.getElementById('loveQuoteText').textContent = text;
+  document.getElementById('loveTextarea').style.display = 'none';
+  document.getElementById('loveSaveBtn').style.display = 'none';
+  document.getElementById('loveEditBtn').textContent = '✏️ Modifica messaggio';
+}
+
+// SUPABASE
+const SUPA_URL = 'https://aspnypmrcewkdaxuduwf.supabase.co';
+const SUPA_KEY = 'sb_publishable_5c4RyzrrZIzuuoDXqKyXog_nT67Yj-x';
+async function dbGet(k) { const res = await fetch(`${SUPA_URL}/rest/v1/poll?key=eq.${k}&select=value`, { headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` } }); const data = await res.json(); return data.length ? data[0].value : null; }
+async function dbSet(k, value) { await fetch(`${SUPA_URL}/rest/v1/poll`, { method: 'POST', headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' }, body: JSON.stringify({ key: k, value }) }); }
+async function dbDelete(k) { await fetch(`${SUPA_URL}/rest/v1/poll?key=eq.${k}`, { method: 'DELETE', headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` } }); }
+
+// SONDAGGIO
+const NICK_PIN = '1234';
+const DEFAULT_POLL = { question: 'Dove vuoi uscire questo weekend?', options: ['🍕 Pizzeria', '🎬 Cinema', '🌊 Passeggiata al mare'] };
+async function getPollData() { const raw = await dbGet('poll_data'); try { return raw ? JSON.parse(raw) : DEFAULT_POLL; } catch { return DEFAULT_POLL; } }
+async function getVote() { return await dbGet('poll_vote'); }
+
+async function renderPoll() {
+  const poll = await getPollData();
+  const vote = await getVote();
+  document.getElementById('pollQuestion').textContent = poll.question;
+  const od = document.getElementById('pollOptions');
+  const rd = document.getElementById('pollResult');
+  const rb = document.getElementById('pollResetBtn');
+  od.innerHTML = '';
+  if (vote) {
+    od.style.display = 'flex'; rd.style.display = 'block'; rb.style.display = 'block';
+    poll.options.forEach(opt => {
+      const btn = document.createElement('button');
+      const sel = opt === vote;
+      btn.className = 'poll-option-btn' + (sel ? ' selected' : '');
+      btn.style.opacity = sel ? '1' : '0.45';
+      btn.textContent = (sel ? '✅ ' : '') + opt;
+      btn.disabled = true;
+      od.appendChild(btn);
+    });
+    rd.innerHTML = '<div class="poll-result-text">Chicca ha scelto! <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;" alt=""></div><div class="poll-result-sub">Nick lo sa già <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;" alt="💘"></div>';
+  } else {
+    od.style.display = 'flex'; rd.style.display = 'none'; rb.style.display = 'none';
+    poll.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'poll-option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => selectOption(opt, btn);
+      od.appendChild(btn);
+    });
+  }
+}
+
+async function selectOption(opt, btn) {
+  document.querySelectorAll('.poll-option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setTimeout(async () => { await dbSet('poll_vote', opt); renderPoll(); for (let i=0;i<5;i++) setTimeout(spawnHeart,i*150); }, 500);
+}
+async function resetVote() { await dbDelete('poll_vote'); renderPoll(); }
+function toggleNickPanel() { const p = document.getElementById('nickPanel'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; }
+async function checkPin() {
+  if (document.getElementById('nickPinInput').value === NICK_PIN) {
+    document.getElementById('nickPinArea').style.display = 'none';
+    document.getElementById('nickEditor').style.display = 'block';
+    const poll = await getPollData();
+    document.getElementById('editQuestion').value = poll.question;
+    document.getElementById('editOpt1').value = poll.options[0] || '';
+    document.getElementById('editOpt2').value = poll.options[1] || '';
+    document.getElementById('editOpt3').value = poll.options[2] || '';
+  } else { document.getElementById('pinError').style.display = 'block'; }
+}
+async function savePoll() {
+  const q=document.getElementById('editQuestion').value.trim();
+  const o1=document.getElementById('editOpt1').value.trim();
+  const o2=document.getElementById('editOpt2').value.trim();
+  const o3=document.getElementById('editOpt3').value.trim();
+  if (!q||!o1||!o2||!o3) return;
+  await dbSet('poll_data', JSON.stringify({question:q,options:[o1,o2,o3]}));
+  await dbDelete('poll_vote');
+  renderPoll();
+  const m = document.getElementById('saveMsg');
+  m.style.display = 'block';
+  setTimeout(() => m.style.display = 'none', 2500);
+}
+async function clearVoteAdmin() { await dbDelete('poll_vote'); renderPoll(); }
+renderPoll();
+
+// MUSICA
+const musicBtn = document.getElementById('musicBtn');
+const bgMusic = document.getElementById('bgMusic');
+let playing = false;
+musicBtn.addEventListener('click', () => {
+  if (!bgMusic.src || bgMusic.src === window.location.href) { alert('🎵 Aggiungi il link alla tua canzone nel codice HTML'); return; }
+  if (playing) { bgMusic.pause(); musicBtn.textContent = '🎵'; musicBtn.classList.remove('playing'); }
+  else { bgMusic.play().catch(() => {}); musicBtn.textContent = '🎶'; musicBtn.classList.add('playing'); }
+  playing = !playing;
+});
+</script>
+</body>
+</html>
