@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick 💘 Chicca</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<script src="js/jquery.js"></script>
+<script src="js/garden.js"></script>
+<script src="js/functions.js"></script>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+  <img class="bg" src="https://i.imgur.com/1cqpDVr.jpeg" alt="Lucky">
+  <div class="overlay"></div>
+  <div class="lock-content">
+    <h1>Nick & Chicca</h1>
+    <div class="card">
+      <p>Come si chiama la nostra mascotte?</p>
+      <input id="lockInput" type="password" placeholder="scrivi qui..." maxlength="20"
+        onkeydown="if(event.key==='Enter')checkLock()">
+      <p id="lockError">Risposta non corretta, riprova 🌸</p>
+      <button onclick="checkLock()">Entra ✨</button>
+    </div>
+    <p class="lock-credit">fatto con amore da Nick 💘</p>
+  </div>
+</div>
+
+<!-- PETALI E CUORI -->
+<div class="petal-container" id="petalContainer"></div>
+<div class="heart-container" id="heartContainer"></div>
+
+<!-- MUSICA -->
+<button class="music-btn" id="musicBtn">🎵</button>
+<audio id="bgMusic" loop><source src="" type="audio/mp3"></audio>
+
+<!-- HERO CON ANIMAZIONE CUORE -->
+<section id="heroSection">
+  <div id="mainDiv">
+    <div id="content">
+      <div id="loveHeart">
+        <canvas id="garden"></canvas>
+        <div id="words">
+          <div id="messages">
+            Nick &amp; Chicca
+            <div id="elapseClock"></div>
+          </div>
+          <div id="loveu">
+            ti amo ogni giorno di più
+            <div class="signature">— il tuo Nick 💘</div>
+          </div>
+        </div>
+      </div>
+      <div id="code">
+        Cara Chicca,<br><br>
+        ogni giorno con te<br>
+        è il più bello della mia vita.<br><br>
+        Dal giorno in cui sei diventata mia,<br>
+        il mondo ha un colore diverso.<br><br>
+        Grazie per ogni sorriso,<br>
+        ogni abbraccio, ogni momento.<br><br>
+        Sei la mia persona preferita.<br><br>
+        Con tutto il mio amore,<br>
+        <br>
+        Nick 💘
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMER -->
+<section class="timer-section">
+  <p class="timer-label">🌸 Insieme da 🌸</p>
+  <div class="timer-grid">
+    <div class="timer-block"><span class="timer-num" id="t-giorni">0</span><span class="timer-unit">giorni</span></div>
+    <div class="timer-block"><span class="timer-num" id="t-ore">0</span><span class="timer-unit">ore</span></div>
+    <div class="timer-block"><span class="timer-num" id="t-min">0</span><span class="timer-unit">minuti</span></div>
+    <div class="timer-block"><span class="timer-num" id="t-sec">0</span><span class="timer-unit">secondi</span></div>
+  </div>
+</section>
+
+<div class="divider">🌿 ✿ 🌿</div>
+
+<!-- STORIA -->
+<section class="section">
+  <h2 class="section-title">La nostra storia</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">8 gennaio 2026</div>
+      <div class="timeline-title">Il nostro inizio 💘</div>
+      <div class="timeline-text">Il giorno in cui tutto è cambiato — il giorno in cui sei diventata mia e io tuo...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Un momento speciale 🌸</div>
+      <div class="timeline-text">Racconta qui un ricordo che volete custodire per sempre...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Ancora insieme 🌿</div>
+      <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">🌿 ✿ 🌿</div>
+
+<!-- FOTO -->
+<section class="section">
+  <h2 class="section-title">I nostri ricordi</h2>
+  <div class="gallery">
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon">🌸</div><span>Aggiungi una foto</span></div></div>
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon">📸</div><span>Aggiungi una foto</span></div></div>
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon">💕</div><span>Aggiungi una foto</span></div></div>
+    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon">🌿</div><span>Aggiungi una foto</span></div></div>
+  </div>
+</section>
+
+<div class="divider">🌿 ✿ 🌿</div>
+
+<!-- MESSAGGIO -->
+<section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
+  <div class="love-message-section">
+    <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
+    <p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
+    <p class="love-from">— Il tuo Nick 💘</p>
+    <button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()">✏️ Scrivi messaggio</button>
+    <textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
+    <button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()">💾 Salva</button>
+  </div>
+</section>
+
+<div class="divider">🌿 ✿ 🌿</div>
+
+<!-- SONDAGGIO -->
+<section class="section" style="max-width:680px;">
+  <h2 class="section-title">Cosa vuoi fare?</h2>
+  <div id="pollQuestion" style="text-align:center;font-style:italic;font-size:clamp(1.1rem,3vw,1.35rem);color:var(--text-light);margin-bottom:24px;">Dove vuoi uscire questo weekend?</div>
+  <div id="pollOptions" class="poll-options"></div>
+  <div id="pollResult" class="poll-result" style="display:none;"></div>
+  <button class="poll-reset-btn" id="pollResetBtn" style="display:none;" onclick="resetVote()">🔄 Cambia risposta</button>
+  <div style="text-align:center;margin-top:32px;">
+    <button class="nick-toggle-btn" onclick="toggleNickPanel()">🔒 Pannello Nick</button>
+  </div>
+  <div id="nickPanel" style="display:none;margin-top:20px;">
+    <div id="nickPinArea" class="nick-box">
+      <p style="font-style:italic;color:var(--text-light);margin-bottom:12px;">Inserisci il PIN per accedere</p>
+      <input type="password" id="nickPinInput" class="nick-input" placeholder="PIN segreto" maxlength="6">
+      <button class="love-edit-btn" style="margin-top:12px;" onclick="checkPin()">Accedi</button>
+      <p id="pinError" style="color:var(--rose-deep);margin-top:8px;font-size:0.9rem;display:none;">PIN errato ❌</p>
+    </div>
+    <div id="nickEditor" style="display:none;" class="nick-box">
+      <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:16px;">✏️ Modifica il sondaggio</p>
+      <label class="nick-label">Domanda</label>
+      <input type="text" id="editQuestion" class="nick-input" placeholder="Es. Dove vuoi uscire questo weekend?">
+      <label class="nick-label" style="margin-top:12px;">Opzione 1</label>
+      <input type="text" id="editOpt1" class="nick-input" placeholder="Es. 🍕 Pizzeria">
+      <label class="nick-label" style="margin-top:8px;">Opzione 2</label>
+      <input type="text" id="editOpt2" class="nick-input" placeholder="Es. 🎬 Cinema">
+      <label class="nick-label" style="margin-top:8px;">Opzione 3</label>
+      <input type="text" id="editOpt3" class="nick-input" placeholder="Es. 🌊 Passeggiata al mare">
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+        <button class="love-edit-btn" onclick="savePoll()">💾 Salva sondaggio</button>
+        <button class="love-save-btn" style="display:inline-block;" onclick="clearVoteAdmin()">🗑️ Cancella risposta di Chicca</button>
+      </div>
+      <p id="saveMsg" style="color:var(--green);margin-top:10px;font-size:0.9rem;display:none;">✅ Sondaggio aggiornato!</p>
+    </div>
+  </div>
+</section>
+
+<div class="footer">Nick 💘 Chicca — per sempre</div>
+
+<script>
+// ── LOCK SCREEN ──
+function checkLock() {
+  var val = document.getElementById('lockInput').value.trim().toLowerCase();
+  if (val === 'lucky') {
+    sessionStorage.setItem('unlocked','1');
+    unlockWithTransition();
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    var inp = document.getElementById('lockInput');
+    inp.style.transform='translateX(-8px)';
+    setTimeout(function(){inp.style.transform='translateX(8px)';},80);
+    setTimeout(function(){inp.style.transform='translateX(-6px)';},160);
+    setTimeout(function(){inp.style.transform='translateX(6px)';},240);
+    setTimeout(function(){inp.style.transform='translateX(0)';},320);
+  }
+}
+function unlockWithTransition() {
+  var ls = document.getElementById('lockScreen');
+  for (var i=0;i<18;i++) {
+    (function(i){setTimeout(function(){
+      var h=document.createElement('div');
+      var emojis=['💘','🌸','💕','✨','💖','🌹'];
+      h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      h.style.cssText='position:fixed;z-index:10001;pointer-events:none;font-size:'+(24+Math.random()*24)+'px;left:'+(Math.random()*100)+'vw;top:'+(Math.random()*100)+'vh;animation:burstHeart 0.9s ease forwards;';
+      document.body.appendChild(h);
+      setTimeout(function(){h.remove();},900);
+    },i*60);})(i);
+  }
+  var overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:10000;background:white;opacity:0;transition:opacity 0.6s ease;pointer-events:none;';
+  document.body.appendChild(overlay);
+  setTimeout(function(){overlay.style.opacity='1';},400);
+  setTimeout(function(){
+    ls.style.display='none';
+    overlay.style.transition='opacity 0.8s ease';
+    overlay.style.opacity='0';
+    setTimeout(function(){overlay.remove();},800);
+  },1000);
+}
+var burstStyle=document.createElement('style');
+burstStyle.textContent='@keyframes burstHeart{0%{transform:scale(0) rotate(0deg);opacity:1;}60%{transform:scale(1.4) rotate(20deg);opacity:1;}100%{transform:scale(0.8) translateY(-60px) rotate(-10deg);opacity:0;}}';
+document.head.appendChild(burstStyle);
+if (sessionStorage.getItem('unlocked')==='1') {
+  document.getElementById('lockScreen').style.display='none';
+}
+
+// ── PETALI ──
+var petalContainer=document.getElementById('petalContainer');
+for(var i=0;i<18;i++){
+  var p=document.createElement('div');
+  p.classList.add('petal');
+  var size=14+Math.random()*14;
+  p.style.cssText='left:'+Math.random()*100+'%;width:'+size+'px;height:'+(size*1.2)+'px;animation-duration:'+(7+Math.random()*8)+'s;animation-delay:'+(-Math.random()*12)+'s;border-radius:'+(60+Math.random()*30)+'% 0 '+(60+Math.random()*30)+'% 0;transform:rotate('+Math.random()*360+'deg);';
+  petalContainer.appendChild(p);
+}
+
+// ── CUORI ──
+var heartContainer=document.getElementById('heartContainer');
+var hearts=['💘','💗','🌸','💕','💖','🌹'];
+function spawnHeart(){
+  var h=document.createElement('div');
+  h.classList.add('floating-heart');
+  h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+  var size=16+Math.random()*20;
+  var duration=6+Math.random()*8;
+  h.style.cssText='left:'+(5+Math.random()*90)+'%;font-size:'+size+'px;animation-duration:'+duration+'s;';
+  heartContainer.appendChild(h);
+  setTimeout(function(){h.remove();},duration*1000);
+}
+setInterval(spawnHeart,900);
+
+// ── TIMER ──
+var start=new Date('2026-01-08T18:11:00');
+function updateTimer(){
+  var diff=new Date()-start;
+  if(diff<0)return;
+  document.getElementById('t-giorni').textContent=Math.floor(diff/86400000);
+  document.getElementById('t-ore').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('t-min').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('t-sec').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+}
+updateTimer();
+setInterval(updateTimer,1000);
+
+// ── SCROLL TIMELINE ──
+var observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.2});
+document.querySelectorAll('.timeline-item').forEach(function(i){observer.observe(i);});
+
+// ── FOTO ──
+function loadPhoto(input){
+  if(!input.files||!input.files[0])return;
+  var slot=input.parentElement;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var ex=slot.querySelector('img.photo');if(ex)ex.remove();
+    var img=document.createElement('img');img.className='photo';img.src=e.target.result;
+    slot.insertBefore(img,slot.firstChild);
+    slot.querySelector('.upload-label').style.display='none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ── MESSAGGIO ──
+function toggleEdit(){
+  var ta=document.getElementById('loveTextarea');
+  var sb=document.getElementById('loveSaveBtn');
+  var eb=document.getElementById('loveEditBtn');
+  var show=ta.style.display!=='block';
+  ta.style.display=show?'block':'none';
+  sb.style.display=show?'inline-block':'none';
+  eb.textContent=show?'❌ Annulla':'✏️ Scrivi messaggio';
+  if(show){ta.value=document.getElementById('loveQuoteText').textContent.includes('Scrivi')?'':document.getElementById('loveQuoteText').textContent;ta.focus();}
+}
+function saveMessage(){
+  var text=document.getElementById('loveTextarea').value.trim();
+  if(!text)return;
+  document.getElementById('loveQuoteText').textContent=text;
+  document.getElementById('loveTextarea').style.display='none';
+  document.getElementById('loveSaveBtn').style.display='none';
+  document.getElementById('loveEditBtn').textContent='✏️ Modifica messaggio';
+}
+
+// ── SUPABASE ──
+var SUPA_URL='https://aspnypmrcewkdaxuduwf.supabase.co';
+var SUPA_KEY='sb_publishable_5c4RyzrrZIzuuoDXqKyXog_nT67Yj-x';
+function dbGet(k){return fetch(SUPA_URL+'/rest/v1/poll?key=eq.'+k+'&select=value',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}).then(function(r){return r.json();}).then(function(d){return d.length?d[0].value:null;});}
+function dbSet(k,value){return fetch(SUPA_URL+'/rest/v1/poll',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify({key:k,value:value})});}
+function dbDelete(k){return fetch(SUPA_URL+'/rest/v1/poll?key=eq.'+k,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});}
+
+// ── SONDAGGIO ──
+var NICK_PIN='1234';
+var DEFAULT_POLL={question:'Dove vuoi uscire questo weekend?',options:['🍕 Pizzeria','🎬 Cinema','🌊 Passeggiata al mare']};
+function getPollData(){return dbGet('poll_data').then(function(raw){try{return raw?JSON.parse(raw):DEFAULT_POLL;}catch(e){return DEFAULT_POLL;}});}
+function getVote(){return dbGet('poll_vote');}
+
+function renderPoll(){
+  getPollData().then(function(poll){
+    getVote().then(function(vote){
+      document.getElementById('pollQuestion').textContent=poll.question;
+      var od=document.getElementById('pollOptions');
+      var rd=document.getElementById('pollResult');
+      var rb=document.getElementById('pollResetBtn');
+      od.innerHTML='';
+      if(vote){
+        od.style.display='flex';rd.style.display='block';rb.style.display='block';
+        poll.options.forEach(function(opt){
+          var btn=document.createElement('button');
+          var sel=opt===vote;
+          btn.className='poll-option-btn'+(sel?' selected':'');
+          btn.style.opacity=sel?'1':'0.45';
+          btn.textContent=(sel?'✅ ':'')+opt;
+          btn.disabled=true;
+          od.appendChild(btn);
+        });
+        rd.innerHTML='<div class="poll-result-text">Chicca ha scelto! 🌸</div><div class="poll-result-sub">Nick lo sa già 💘</div>';
+      } else {
+        od.style.display='flex';rd.style.display='none';rb.style.display='none';
+        poll.options.forEach(function(opt){
+          var btn=document.createElement('button');
+          btn.className='poll-option-btn';
+          btn.textContent=opt;
+          btn.onclick=function(){selectOption(opt,btn);};
+          od.appendChild(btn);
+        });
+      }
+    });
+  });
+}
+function selectOption(opt,btn){
+  document.querySelectorAll('.poll-option-btn').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');
+  setTimeout(function(){dbSet('poll_vote',opt).then(function(){renderPoll();for(var i=0;i<5;i++)setTimeout(spawnHeart,i*150);});},500);
+}
+function resetVote(){dbDelete('poll_vote').then(renderPoll);}
+function toggleNickPanel(){var p=document.getElementById('nickPanel');p.style.display=p.style.display==='none'?'block':'none';}
+function checkPin(){
+  if(document.getElementById('nickPinInput').value===NICK_PIN){
+    document.getElementById('nickPinArea').style.display='none';
+    document.getElementById('nickEditor').style.display='block';
+    getPollData().then(function(poll){
+      document.getElementById('editQuestion').value=poll.question;
+      document.getElementById('editOpt1').value=poll.options[0]||'';
+      document.getElementById('editOpt2').value=poll.options[1]||'';
+      document.getElementById('editOpt3').value=poll.options[2]||'';
+    });
+  } else {document.getElementById('pinError').style.display='block';}
+}
+function savePoll(){
+  var q=document.getElementById('editQuestion').value.trim();
+  var o1=document.getElementById('editOpt1').value.trim();
+  var o2=document.getElementById('editOpt2').value.trim();
+  var o3=document.getElementById('editOpt3').value.trim();
+  if(!q||!o1||!o2||!o3)return;
+  dbSet('poll_data',JSON.stringify({question:q,options:[o1,o2,o3]})).then(function(){
+    dbDelete('poll_vote').then(renderPoll);
+    var m=document.getElementById('saveMsg');m.style.display='block';setTimeout(function(){m.style.display='none';},2500);
+  });
+}
+function clearVoteAdmin(){dbDelete('poll_vote').then(renderPoll);}
+renderPoll();
+
+// ── AVVIA ANIMAZIONE CUORE dopo 2s ──
+$(document).ready(function(){
+  var together=new Date('2026-01-08T18:11:00');
+  timeElapse(together);
+  setInterval(function(){timeElapse(together);},500);
+  adjustCodePosition();
+  setTimeout(function(){startHeartAnimation();},2000);
+});
+
+// ── MUSICA ──
+var musicBtn=document.getElementById('musicBtn');
+var bgMusic=document.getElementById('bgMusic');
+var playing=false;
+musicBtn.addEventListener('click',function(){
+  if(!bgMusic.src||bgMusic.src===window.location.href){alert('🎵 Aggiungi il link alla tua canzone nel codice HTML');return;}
+  if(playing){bgMusic.pause();musicBtn.textContent='🎵';musicBtn.classList.remove('playing');}
+  else{bgMusic.play().catch(function(){});musicBtn.textContent='🎶';musicBtn.classList.add('playing');}
+  playing=!playing;
+});
+</script>
+</body>
+</html>
