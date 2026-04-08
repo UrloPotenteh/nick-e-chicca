@@ -28,15 +28,15 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
   right: 20px;
   z-index: 101;
   width: min(340px, calc(100vw - 40px));
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(160deg, #fff8f9 0%, #fdf0f2 100%);
+  backdrop-filter: blur(16px);
   border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(232, 160, 168, 0.3);
-  border: 2px solid var(--rose-light);
+  box-shadow: 0 12px 40px rgba(196, 104, 122, 0.22), 0 2px 8px rgba(232,160,168,0.15);
+  border: 1.5px solid var(--rose-light);
   overflow: hidden;
   opacity: 0;
-  transform: translateY(20px) scale(0.9);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: translateY(24px) scale(0.92);
+  transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
 }
 
@@ -47,35 +47,47 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
 }
 
 .spotify-header {
-  padding: 14px 18px;
+  padding: 13px 16px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, var(--rose-light), #fce8ec);
+  background: linear-gradient(135deg, #f9d0d8, #fce4ea);
+  border-bottom: 1px solid #f5c8d0;
 }
 
 .spotify-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Great Vibes', cursive;
   color: var(--rose-deep);
-  font-weight: bold;
-  font-size: 0.95rem;
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
 }
 
 .spotify-close {
-  background: white;
-  border: none;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--rose-light);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   cursor: pointer;
   color: var(--rose-deep);
+  font-size: 0.8rem;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+}
+.spotify-close:hover {
+  background: white;
+  transform: scale(1.1);
 }
 
-.spotify-content { padding: 12px; }
+.spotify-content {
+  padding: 12px 12px 10px;
+}
 
 /* ── BOTTONE MUSICA ── */
 .music-btn {
