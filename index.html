@@ -31,8 +31,32 @@
 <!-- PETALI E CUORI -->
 <div class="petal-container" id="petalContainer"></div>
 <div class="heart-container" id="heartContainer"></div>
-<button class="music-btn" id="musicBtn"><img src="https://em-content.zobj.net/source/apple/453/musical-note_1f3b5.png" style="width:1.2em;height:1.2em;"></button>
-<audio id="bgMusic" loop><source src="" type="audio/mp3"></audio>
+<!-- SPOTIFY BOX -->
+<div id="spotifyBox" style="
+  position:fixed; bottom:90px; right:16px; z-index:101;
+  width:min(340px, calc(100vw - 32px));
+  background:white; border-radius:20px;
+  box-shadow:0 8px 40px #e8a0a855;
+  border:1.5px solid var(--rose-light);
+  overflow:hidden;
+  opacity:0; transform:translateY(20px) scale(0.95);
+  transition:opacity 0.3s ease, transform 0.3s ease;
+  pointer-events:none;
+">
+  <div style="padding:14px 16px 0; display:flex; align-items:center; justify-content:space-between;">
+    <span style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--text-light);font-size:0.9rem;">🌸 la nostra playlist</span>
+    <button onclick="toggleSpotify()" style="background:none;border:none;cursor:pointer;color:var(--text-light);font-size:1.1rem;line-height:1;">✕</button>
+  </div>
+  <iframe style="border-radius:0 0 18px 18px; display:block;"
+    src="https://open.spotify.com/embed/playlist/20byPNLhw6tDqCbcDBNYYQ?utm_source=generator"
+    width="100%" height="280" frameBorder="0" allowfullscreen=""
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy"></iframe>
+</div>
+
+<button class="music-btn" id="musicBtn" onclick="toggleSpotify()">
+  <img src="https://em-content.zobj.net/source/apple/453/musical-note_1f3b5.png" style="width:1.2em;height:1.2em;" id="musicIcon">
+</button>
 
 <!-- HERO: cuore animato centrato -->
 <section id="heroSection">
@@ -245,8 +269,23 @@ $(document).ready(function(){
 });
 
 // MUSICA
-var mb=document.getElementById('musicBtn'),bm=document.getElementById('bgMusic'),pl=false;
-mb.addEventListener('click',function(){if(!bm.src||bm.src===window.location.href){alert('Aggiungi il link alla tua canzone nel codice HTML');return;}if(pl){bm.pause();mb.innerHTML='<img src="https://em-content.zobj.net/source/apple/453/musical-note_1f3b5.png" style="width:1.2em;height:1.2em;">';mb.classList.remove('playing');}else{bm.play().catch(function(){});mb.innerHTML='<img src="https://em-content.zobj.net/source/apple/453/musical-notes_1f3b6.png" style="width:1.2em;height:1.2em;">';mb.classList.add('playing');}pl=!pl;});
+var spotifyOpen = false;
+function toggleSpotify() {
+  var box = document.getElementById('spotifyBox');
+  var btn = document.getElementById('musicBtn');
+  spotifyOpen = !spotifyOpen;
+  if (spotifyOpen) {
+    box.style.opacity = '1';
+    box.style.transform = 'translateY(0) scale(1)';
+    box.style.pointerEvents = 'all';
+    btn.classList.add('playing');
+  } else {
+    box.style.opacity = '0';
+    box.style.transform = 'translateY(20px) scale(0.95)';
+    box.style.pointerEvents = 'none';
+    btn.classList.remove('playing');
+  }
+}
 </script>
 </body>
 </html>
