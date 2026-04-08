@@ -11,40 +11,17 @@ $(function () {
     }, Garden.options.growSpeed);
 });
 
-
 function initGarden() {
     var container = document.getElementById('loveHeart');
     if (!container) return;
-    
-    // Calcola la dimensione del contenitore
     var size = Math.min(container.offsetWidth, container.offsetHeight);
     gardenCanvas = document.getElementById('garden');
-    
-    // --- FIX PER MOBILE (NITIDEZZA) ---
-    // Rileviamo la densità dei pixel dello schermo (es. iPhone ha 3x)
-    var ratio = window.devicePixelRatio || 1;
-    
-    // Moltiplichiamo la risoluzione interna per il ratio
-    gardenCanvas.width = size * ratio;      
-    gardenCanvas.height = size * ratio;
-    
-    // Impediamo al canvas di ingrandirsi visivamente
-    gardenCanvas.style.width = size + 'px';  
-    gardenCanvas.style.height = size + 'px';
-    
+    gardenCanvas.width = size;
+    gardenCanvas.height = size;
     gardenCtx = gardenCanvas.getContext('2d');
-    
-    // Scaliamo il contesto di disegno in base al ratio
-    // Senza questo, i fiori verrebbero disegnati piccolissimi in un angolo
-    gardenCtx.setTransform(ratio, 0, 0, ratio, 0, 0); 
-    // ----------------------------------
-
     gardenCtx.globalCompositeOperation = 'lighter';
     garden = new Garden(gardenCtx, gardenCanvas);
-    
-    // Centra il cuore nel canvas
     offsetX = size / 2;
-    // Sposta leggermente il centro verso l'alto (9% della dimensione)
     offsetY = size / 2 - size * 0.09;
 }
 
