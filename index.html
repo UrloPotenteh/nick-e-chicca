@@ -4,59 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nick 💘 Chicca</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
-
-<style>
-  /* FIX POSIZIONAMENTO SCRITTE NEL CUORE */
-  #loveHeart {
-    position: relative;
-    width: 670px;
-    height: 625px;
-    margin: 0 auto;
-  }
-
-  #words {
-    position: absolute;
-    width: 100%;
-    /* Sposta le scritte leggermente in alto (42% invece di 50%) */
-    top: 42% !important;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 999;
-    font-family: "sans-serif";
-  }
-
-  #messages {
-    font-family: 'Great Vibes', cursive;
-    font-size: 28px;
-    color: #c70039;
-    margin-bottom: 5px;
-  }
-
-  #loveu {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    font-style: italic;
-    color: #666;
-  }
-
-  /* Animazione per i petali/cuori che scoppiano allo sblocco */
-  @keyframes burstHeart {
-    0% { transform: scale(0); opacity: 1; }
-    60% { transform: scale(1.4) rotate(20deg); opacity: 1; }
-    100% { transform: scale(0.8) translateY(-60px); opacity: 0; }
-  }
-</style>
-
 <script src="js/jquery.js"></script>
 <script src="js/garden.js"></script>
 <script src="js/functions.js"></script>
 </head>
 <body>
 
+<!-- LOCK SCREEN -->
 <div id="lockScreen">
   <img class="bg" src="https://i.imgur.com/1cqpDVr.jpeg" alt="Lucky">
   <div class="overlay"></div>
@@ -72,11 +28,13 @@
   </div>
 </div>
 
+<!-- PETALI E CUORI -->
 <div class="petal-container" id="petalContainer"></div>
 <div class="heart-container" id="heartContainer"></div>
 <button class="music-btn" id="musicBtn"><img src="https://em-content.zobj.net/source/apple/453/musical-note_1f3b5.png" style="width:1.2em;height:1.2em;"></button>
 <audio id="bgMusic" loop><source src="" type="audio/mp3"></audio>
 
+<!-- HERO: cuore animato centrato -->
 <section id="heroSection">
   <div id="loveHeart">
     <canvas id="garden"></canvas>
@@ -86,11 +44,13 @@
       </div>
       <div id="loveu">
         ti amo ogni giorno di più
+        <div class="signature">— il tuo Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;"></div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- TIMER -->
 <section class="timer-section">
   <p class="timer-label"><img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;"> Insieme da <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;"></p>
   <div class="timer-grid">
@@ -103,6 +63,7 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
+<!-- STORIA -->
 <section class="section">
   <h2 class="section-title">La nostra storia</h2>
   <div class="timeline">
@@ -129,6 +90,7 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
+<!-- FOTO -->
 <section class="section">
   <h2 class="section-title">I nostri ricordi</h2>
   <div class="gallery">
@@ -141,10 +103,12 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
+<!-- MESSAGGIO -->
 <section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
   <div class="love-message-section">
     <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
     <p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
+    <p class="love-from">— Il tuo Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></p>
     <button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio</button>
     <textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
     <button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Salva</button>
@@ -153,6 +117,7 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
+<!-- SONDAGGIO -->
 <section class="section" style="max-width:680px;">
   <h2 class="section-title">Cosa vuoi fare?</h2>
   <div id="pollQuestion" style="text-align:center;font-style:italic;font-size:clamp(1.1rem,3vw,1.35rem);color:var(--text-light);margin-bottom:24px;">Dove vuoi uscire questo weekend?</div>
@@ -191,7 +156,7 @@
 <div class="footer">Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;"> Chicca — per sempre</div>
 
 <script>
-// LOGICA DI SBLOCCO
+// LOCK
 function checkLock(){
   var val=document.getElementById('lockInput').value.trim().toLowerCase();
   if(val==='lucky'){sessionStorage.setItem('unlocked','1');unlockWithTransition();}
@@ -216,13 +181,16 @@ function unlockWithTransition(){
   setTimeout(function(){ov.style.opacity='1';},400);
   setTimeout(function(){ls.style.display='none';ov.style.transition='opacity 0.8s ease';ov.style.opacity='0';setTimeout(function(){ov.remove();},800);},1000);
 }
+var bs=document.createElement('style');
+bs.textContent='@keyframes burstHeart{0%{transform:scale(0);opacity:1;}60%{transform:scale(1.4) rotate(20deg);opacity:1;}100%{transform:scale(0.8) translateY(-60px);opacity:0;}}';
+document.head.appendChild(bs);
 if(sessionStorage.getItem('unlocked')==='1')document.getElementById('lockScreen').style.display='none';
 
-// ANIMAZIONE PETALI
+// PETALI
 var pc=document.getElementById('petalContainer');
 for(var i=0;i<18;i++){var p=document.createElement('div');p.classList.add('petal');var sz=14+Math.random()*14;p.style.cssText='left:'+Math.random()*100+'%;width:'+sz+'px;height:'+(sz*1.2)+'px;animation-duration:'+(7+Math.random()*8)+'s;animation-delay:'+(-Math.random()*12)+'s;border-radius:'+(60+Math.random()*30)+'% 0 '+(60+Math.random()*30)+'% 0;';pc.appendChild(p);}
 
-// ANIMAZIONE CUORI FLUTTUANTI
+// CUORI
 var hc=document.getElementById('heartContainer');
 var heartImgs=['heart-with-arrow_1f498','cherry-blossom_1f338','two-hearts_1f495','sparkling-heart_1f496','rose_1f339'];
 function spawnHeart(){
@@ -237,7 +205,7 @@ function spawnHeart(){
 }
 setInterval(spawnHeart,900);
 
-// TIMER RELAZIONE
+// TIMER
 var start=new Date('2026-01-08T18:11:00');
 function updateTimer(){var diff=new Date()-start;if(diff<0)return;document.getElementById('t-giorni').textContent=Math.floor(diff/86400000);document.getElementById('t-ore').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');document.getElementById('t-min').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');document.getElementById('t-sec').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');}
 updateTimer();setInterval(updateTimer,1000);
@@ -249,17 +217,17 @@ document.querySelectorAll('.timeline-item').forEach(function(i){obs.observe(i);}
 // FOTO
 function loadPhoto(input){if(!input.files||!input.files[0])return;var slot=input.parentElement;var reader=new FileReader();reader.onload=function(e){var ex=slot.querySelector('img.photo');if(ex)ex.remove();var img=document.createElement('img');img.className='photo';img.src=e.target.result;slot.insertBefore(img,slot.firstChild);slot.querySelector('.upload-label').style.display='none';};reader.readAsDataURL(input.files[0]);}
 
-// MESSAGGIO EDITABILE
+// MESSAGGIO
 function toggleEdit(){var ta=document.getElementById('loveTextarea'),sb=document.getElementById('loveSaveBtn'),eb=document.getElementById('loveEditBtn');var show=ta.style.display!=='block';ta.style.display=show?'block':'none';sb.style.display=show?'inline-block':'none';eb.innerHTML=show?'❌ Annulla':'<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio';if(show){ta.value=document.getElementById('loveQuoteText').textContent.includes('Scrivi')?'':document.getElementById('loveQuoteText').textContent;ta.focus();}}
 function saveMessage(){var text=document.getElementById('loveTextarea').value.trim();if(!text)return;document.getElementById('loveQuoteText').textContent=text;document.getElementById('loveTextarea').style.display='none';document.getElementById('loveSaveBtn').style.display='none';document.getElementById('loveEditBtn').innerHTML='<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Modifica messaggio';}
 
-// DATABASE (SUPABASE)
+// SUPABASE
 var SURL='https://aspnypmrcewkdaxuduwf.supabase.co',SKEY='sb_publishable_5c4RyzrrZIzuuoDXqKyXog_nT67Yj-x';
 function dbGet(k){return fetch(SURL+'/rest/v1/poll?key=eq.'+k+'&select=value',{headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}).then(function(r){return r.json();}).then(function(d){return d.length?d[0].value:null;});}
 function dbSet(k,v){return fetch(SURL+'/rest/v1/poll',{method:'POST',headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify({key:k,value:v})});}
 function dbDelete(k){return fetch(SURL+'/rest/v1/poll?key=eq.'+k,{method:'DELETE',headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});}
 
-// LOGICA SONDAGGIO
+// SONDAGGIO
 var NICK_PIN='1234',DEFAULT_POLL={question:'Dove vuoi uscire questo weekend?',options:['🍕 Pizzeria','🎬 Cinema','🌊 Passeggiata al mare']};
 function getPoll(){return dbGet('poll_data').then(function(r){try{return r?JSON.parse(r):DEFAULT_POLL;}catch(e){return DEFAULT_POLL;}});}
 function renderPoll(){getPoll().then(function(poll){dbGet('poll_vote').then(function(vote){document.getElementById('pollQuestion').textContent=poll.question;var od=document.getElementById('pollOptions'),rd=document.getElementById('pollResult'),rb=document.getElementById('pollResetBtn');od.innerHTML='';if(vote){od.style.display='flex';rd.style.display='block';rb.style.display='block';poll.options.forEach(function(opt){var btn=document.createElement('button');btn.className='poll-option-btn'+(opt===vote?' selected':'');btn.style.opacity=opt===vote?'1':'0.45';btn.textContent=(opt===vote?'✅ ':'')+opt;btn.disabled=true;od.appendChild(btn);});rd.innerHTML='<div class="poll-result-text">Chicca ha scelto! 🌸</div><div class="poll-result-sub">Nick lo sa già 💘</div>';}else{od.style.display='flex';rd.style.display='none';rb.style.display='none';poll.options.forEach(function(opt){var btn=document.createElement('button');btn.className='poll-option-btn';btn.textContent=opt;btn.onclick=function(){selectOption(opt,btn);};od.appendChild(btn);});}});});}
@@ -271,12 +239,12 @@ function savePoll(){var q=document.getElementById('editQuestion').value.trim(),o
 function clearVoteAdmin(){dbDelete('poll_vote').then(renderPoll);}
 renderPoll();
 
-// AVVIA ANIMAZIONE CUORE (GARDEN.JS)
+// AVVIA ANIMAZIONE CUORE
 $(document).ready(function(){
-  setTimeout(function(){ startHeartAnimation(); }, 2000);
+  setTimeout(function(){startHeartAnimation();},2000);
 });
 
-// CONTROLLO MUSICA
+// MUSICA
 var mb=document.getElementById('musicBtn'),bm=document.getElementById('bgMusic'),pl=false;
 mb.addEventListener('click',function(){if(!bm.src||bm.src===window.location.href){alert('Aggiungi il link alla tua canzone nel codice HTML');return;}if(pl){bm.pause();mb.innerHTML='<img src="https://em-content.zobj.net/source/apple/453/musical-note_1f3b5.png" style="width:1.2em;height:1.2em;">';mb.classList.remove('playing');}else{bm.play().catch(function(){});mb.innerHTML='<img src="https://em-content.zobj.net/source/apple/453/musical-notes_1f3b6.png" style="width:1.2em;height:1.2em;">';mb.classList.add('playing');}pl=!pl;});
 </script>
