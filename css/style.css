@@ -57,7 +57,7 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
 /* Nomi al centro del cuore */
 #words {
   position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-40%);
+  transform:translate(-50%,-55%);
   text-align:center; pointer-events:none;
   width:80%;
 }
