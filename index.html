@@ -87,24 +87,50 @@
 <!-- STORIA -->
 <section class="section">
   <h2 class="section-title">La nostra storia</h2>
+  <!-- Popup foto -->
+  <div id="tlPopup" style="display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;background:rgba(253,240,242,0.92);backdrop-filter:blur(8px);" onclick="closeTlPopup()">
+    <div style="position:relative;max-width:90vw;max-height:90vh;" onclick="event.stopPropagation()">
+      <img id="tlPopupImg" src="" style="max-width:90vw;max-height:80vh;border-radius:24px;box-shadow:0 12px 60px #e8a0a855;display:block;">
+      <button onclick="closeTlPopup()" style="position:absolute;top:-14px;right:-14px;background:white;border:2px solid var(--rose-light);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--rose-deep);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px #e8a0a833;">✕</button>
+    </div>
+  </div>
+
   <div class="timeline">
     <div class="timeline-item">
-      <div class="timeline-dot"></div>
+      <div class="timeline-dot has-photo" onclick="openTlPopup('IMGUR_LINK_1')" title="Tocca per vedere la foto"></div>
       <div class="timeline-date">8 gennaio 2026</div>
       <div class="timeline-title">Il nostro inizio <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Il giorno in cui tutto è cambiato — il giorno in cui sei diventata mia e io tuo...</div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-dot"></div>
+      <div class="timeline-dot has-photo" onclick="openTlPopup('IMGUR_LINK_2')" title="Tocca per vedere la foto"></div>
       <div class="timeline-date">Da aggiungere</div>
       <div class="timeline-title">Un momento speciale <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Racconta qui un ricordo che volete custodire per sempre...</div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-dot"></div>
+      <div class="timeline-dot has-photo" onclick="openTlPopup('IMGUR_LINK_3')" title="Tocca per vedere la foto"></div>
       <div class="timeline-date">Da aggiungere</div>
       <div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot has-photo" onclick="openTlPopup('IMGUR_LINK_4')" title="Tocca per vedere la foto"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Una serata speciale <img src="https://em-content.zobj.net/source/apple/453/sparkling-heart_1f496.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+      <div class="timeline-text">Ogni serata con te diventa un ricordo...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot has-photo" onclick="openTlPopup('IMGUR_LINK_5')" title="Tocca per vedere la foto"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Il nostro posto <img src="https://em-content.zobj.net/source/apple/453/rose_1f339.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+      <div class="timeline-text">Quel posto che è diventato nostro...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot has-photo" onclick="openTlPopup('IMGUR_LINK_6')" title="Tocca per vedere la foto"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Sempre di più <img src="https://em-content.zobj.net/source/apple/453/two-hearts_1f495.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+      <div class="timeline-text">Ogni giorno ti amo un po' di più...</div>
     </div>
   </div>
 </section>
@@ -154,6 +180,8 @@
 <div id="igOverlay">
   <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igOverlayImg">
 </div>
+<!-- Flash bianco per transizione -->
+<div id="igFlash" style="position:fixed;inset:0;z-index:9999;background:white;opacity:0;pointer-events:none;transition:opacity 0.35s ease;"></div>
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
@@ -245,6 +273,21 @@ function spawnHeart(){
 }
 setInterval(spawnHeart,900);
 
+// ── POPUP TIMELINE ──
+function openTlPopup(url) {
+  if (!url || url.indexOf('IMGUR_LINK') !== -1) return;
+  var popup = document.getElementById('tlPopup');
+  var img = document.getElementById('tlPopupImg');
+  img.src = url;
+  popup.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeTlPopup() {
+  document.getElementById('tlPopup').style.display = 'none';
+  document.getElementById('tlPopupImg').src = '';
+  document.body.style.overflow = '';
+}
+
 // TIMER
 var start=new Date('2026-01-08T18:11:00');
 function updateTimer(){var diff=new Date()-start;if(diff<0)return;document.getElementById('t-giorni').textContent=Math.floor(diff/86400000);document.getElementById('t-ore').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');document.getElementById('t-min').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');document.getElementById('t-sec').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');}
@@ -284,76 +327,135 @@ $(document).ready(function(){
   setTimeout(function(){startHeartAnimation();},2000);
 });
 
-// ── CUORE INSTAGRAM ──
+// ── CUORE INSTAGRAM MIGLIORATO ──
 (function() {
   var wrap = document.getElementById('igHeartWrap');
   var heart = document.getElementById('igHeart');
   var overlay = document.getElementById('igOverlay');
   var burst = document.getElementById('igBurst');
+  var glowEl = document.getElementById('igGlow');
   if (!wrap) return;
 
   var pressing = false;
-  var growTimer = null;
   var scale = 1;
-  var MAX = 28; // scala massima (fullscreen)
-  var GROW_SPEED = 0.12;
-  var SHRINK_SPEED = 0.25;
+  var MAX = 30;
+  var GROW_SPEED = 0.14;
+  var SHRINK_SPEED = 0.3;
   var raf = null;
+  var peakReached = false;
 
   function growHeart() {
     if (!pressing) return;
     scale = Math.min(scale + GROW_SPEED, MAX);
     heart.style.transform = 'scale(' + scale + ')';
-    // quando diventa molto grande mostra overlay
-    if (scale > 8) {
-      var prog = (scale - 8) / (MAX - 8);
-      overlay.style.opacity = Math.min(prog * 1.2, 1);
+
+    // bagliore cresce con il cuore
+    var glow = Math.min((scale / MAX) * 80, 80);
+    heart.querySelector('img').style.filter = 'drop-shadow(0 0 ' + glow + 'px #e8a0a8) drop-shadow(0 0 ' + (glow*0.5) + 'px #c4687a)';
+
+    if (scale > 6) {
+      var prog = Math.min((scale - 6) / (MAX - 6), 1);
+      overlay.style.opacity = prog;
       overlay.style.display = 'flex';
     }
+
+    // particelle continue mentre cresce
+    if (Math.random() < 0.15) spawnSingleParticle();
+
+    if (scale >= MAX && !peakReached) {
+      peakReached = true;
+      triggerPeak();
+    }
+
     raf = requestAnimationFrame(growHeart);
+  }
+
+  function triggerPeak() {
+    // flash bianco
+    var flash = document.getElementById('igFlash');
+    flash.style.opacity = '1';
+    setTimeout(function(){ flash.style.opacity = '0'; }, 300);
+    // burst massiccio
+    spawnBurst(16);
   }
 
   function shrinkHeart() {
     cancelAnimationFrame(raf);
     pressing = false;
-    function shrink() {
-      scale = Math.max(scale - SHRINK_SPEED, 1);
-      heart.style.transform = 'scale(' + scale + ')';
-      var prog = Math.max((scale - 8) / (MAX - 8), 0);
-      overlay.style.opacity = Math.min(prog * 1.2, 1);
-      if (scale <= 1) {
-        overlay.style.opacity = 0;
-        setTimeout(function(){ overlay.style.display = 'none'; }, 200);
-        heart.style.transform = 'scale(1)';
-        return;
+
+    // bagliore fade prima di rimpicciolire
+    var flashCover = document.getElementById('igFlash');
+    flashCover.style.transition = 'opacity 0.35s ease';
+    flashCover.style.opacity = '1';
+
+    setTimeout(function() {
+      flashCover.style.opacity = '0';
+      peakReached = false;
+
+      function shrink() {
+        scale = Math.max(scale - SHRINK_SPEED, 1);
+        heart.style.transform = 'scale(' + scale + ')';
+        var prog = Math.max((scale - 6) / (MAX - 6), 0);
+        overlay.style.opacity = prog;
+        var glow = Math.min((scale / MAX) * 80, 80);
+        heart.querySelector('img').style.filter = 'drop-shadow(0 0 ' + glow + 'px #e8a0a8)';
+        if (scale <= 1) {
+          overlay.style.opacity = 0;
+          overlay.style.display = 'none';
+          heart.style.transform = 'scale(1)';
+          heart.querySelector('img').style.filter = 'drop-shadow(0 4px 20px #e8a0a866)';
+          // bounce finale
+          heart.style.transition = 'transform 0.3s cubic-bezier(0.175,0.885,0.32,1.5)';
+          heart.style.transform = 'scale(1.15)';
+          setTimeout(function(){
+            heart.style.transform = 'scale(1)';
+            setTimeout(function(){ heart.style.transition = 'none'; }, 300);
+          }, 150);
+          return;
+        }
+        requestAnimationFrame(shrink);
       }
       requestAnimationFrame(shrink);
-    }
-    requestAnimationFrame(shrink);
+    }, 250);
   }
 
   function startPress(e) {
     e.preventDefault();
+    if (pressing) return;
     pressing = true;
-    // piccolo bounce iniziale
-    heart.style.transition = 'transform 0.08s ease';
-    setTimeout(function(){ heart.style.transition = 'none'; }, 80);
-    // particelle burst
-    spawnBurst();
+    peakReached = false;
+    heart.style.transition = 'none';
+    spawnBurst(8);
     raf = requestAnimationFrame(growHeart);
   }
 
-  function spawnBurst() {
-    burst.innerHTML = '';
-    var emojis = ['💕','✨','🌸','💖','⭐','💗'];
-    for (var i = 0; i < 8; i++) {
-      var el = document.createElement('div');
-      el.className = 'ig-particle';
-      el.textContent = emojis[i % emojis.length];
-      var angle = (i / 8) * 360;
-      el.style.setProperty('--angle', angle + 'deg');
-      burst.appendChild(el);
-      setTimeout(function(el){ el.remove(); }, 700, el);
+  function spawnSingleParticle() {
+    var emojis = ['💕','✨','🌸','💖','⭐','💗','🌹','💫'];
+    var el = document.createElement('div');
+    el.className = 'ig-particle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    var angle = Math.random() * 360;
+    el.style.setProperty('--angle', angle + 'deg');
+    el.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
+    burst.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 700);
+  }
+
+  function spawnBurst(n) {
+    var emojis = ['💕','✨','🌸','💖','⭐','💗','🌹','💫'];
+    for (var i = 0; i < n; i++) {
+      (function(i) {
+        setTimeout(function() {
+          var el = document.createElement('div');
+          el.className = 'ig-particle';
+          el.textContent = emojis[i % emojis.length];
+          var angle = (i / n) * 360 + Math.random() * 20;
+          el.style.setProperty('--angle', angle + 'deg');
+          el.style.fontSize = (0.9 + Math.random() * 0.8) + 'rem';
+          burst.appendChild(el);
+          setTimeout(function(){ el.remove(); }, 700);
+        }, i * 30);
+      })(i);
     }
   }
 
