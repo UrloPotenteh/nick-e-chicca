@@ -138,6 +138,25 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
+<!-- CUORE INSTAGRAM -->
+<section class="section ig-heart-section" style="max-width:400px;text-align:center;">
+  <h2 class="section-title">Il nostro cuore</h2>
+  <p style="font-style:italic;color:var(--text-light);font-size:1rem;margin-bottom:28px;">tieni premuto per sentire il nostro amore 💘</p>
+  <div class="ig-heart-wrap" id="igHeartWrap">
+    <div class="ig-heart" id="igHeart">
+      <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igHeartImg">
+    </div>
+    <div class="ig-burst" id="igBurst"></div>
+  </div>
+</section>
+
+<!-- Overlay cuore fullscreen -->
+<div id="igOverlay">
+  <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igOverlayImg">
+</div>
+
+<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
+
 <!-- SONDAGGIO -->
 <section class="section" style="max-width:680px;">
   <h2 class="section-title">Cosa vuoi fare?</h2>
@@ -264,6 +283,87 @@ renderPoll();
 $(document).ready(function(){
   setTimeout(function(){startHeartAnimation();},2000);
 });
+
+// ── CUORE INSTAGRAM ──
+(function() {
+  var wrap = document.getElementById('igHeartWrap');
+  var heart = document.getElementById('igHeart');
+  var overlay = document.getElementById('igOverlay');
+  var burst = document.getElementById('igBurst');
+  if (!wrap) return;
+
+  var pressing = false;
+  var growTimer = null;
+  var scale = 1;
+  var MAX = 28; // scala massima (fullscreen)
+  var GROW_SPEED = 0.12;
+  var SHRINK_SPEED = 0.25;
+  var raf = null;
+
+  function growHeart() {
+    if (!pressing) return;
+    scale = Math.min(scale + GROW_SPEED, MAX);
+    heart.style.transform = 'scale(' + scale + ')';
+    // quando diventa molto grande mostra overlay
+    if (scale > 8) {
+      var prog = (scale - 8) / (MAX - 8);
+      overlay.style.opacity = Math.min(prog * 1.2, 1);
+      overlay.style.display = 'flex';
+    }
+    raf = requestAnimationFrame(growHeart);
+  }
+
+  function shrinkHeart() {
+    cancelAnimationFrame(raf);
+    pressing = false;
+    function shrink() {
+      scale = Math.max(scale - SHRINK_SPEED, 1);
+      heart.style.transform = 'scale(' + scale + ')';
+      var prog = Math.max((scale - 8) / (MAX - 8), 0);
+      overlay.style.opacity = Math.min(prog * 1.2, 1);
+      if (scale <= 1) {
+        overlay.style.opacity = 0;
+        setTimeout(function(){ overlay.style.display = 'none'; }, 200);
+        heart.style.transform = 'scale(1)';
+        return;
+      }
+      requestAnimationFrame(shrink);
+    }
+    requestAnimationFrame(shrink);
+  }
+
+  function startPress(e) {
+    e.preventDefault();
+    pressing = true;
+    // piccolo bounce iniziale
+    heart.style.transition = 'transform 0.08s ease';
+    setTimeout(function(){ heart.style.transition = 'none'; }, 80);
+    // particelle burst
+    spawnBurst();
+    raf = requestAnimationFrame(growHeart);
+  }
+
+  function spawnBurst() {
+    burst.innerHTML = '';
+    var emojis = ['💕','✨','🌸','💖','⭐','💗'];
+    for (var i = 0; i < 8; i++) {
+      var el = document.createElement('div');
+      el.className = 'ig-particle';
+      el.textContent = emojis[i % emojis.length];
+      var angle = (i / 8) * 360;
+      el.style.setProperty('--angle', angle + 'deg');
+      burst.appendChild(el);
+      setTimeout(function(el){ el.remove(); }, 700, el);
+    }
+  }
+
+  wrap.addEventListener('mousedown', startPress);
+  wrap.addEventListener('touchstart', startPress, {passive:false});
+  document.addEventListener('mouseup', function(){ if(pressing) shrinkHeart(); });
+  document.addEventListener('touchend', function(){ if(pressing) shrinkHeart(); });
+  overlay.addEventListener('mouseup', shrinkHeart);
+  overlay.addEventListener('touchend', shrinkHeart);
+})();
 
 // MUSICA
 var spotifyOpen = false;
