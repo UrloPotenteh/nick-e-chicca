@@ -286,41 +286,6 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
   50% { transform: scale(1.04); }
 }
 
-//cuore inta chatgpt
-#loveHeart {
-    transition: transform 1.2s ease-in-out;
-    cursor: pointer;
-}
-
-.fullscreen-heart {
-    transform: scale(10);
-}
-
-#explosionCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 999;
-}
-
-.flash {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: radial-gradient(circle, rgba(255,182,193,0.8) 0%, rgba(255,182,193,0) 70%);
-    opacity: 0;
-    animation: flashAnim 0.6s ease-out;
-    z-index: 998;
-}
-
-@keyframes flashAnim {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
 /* ── FOOTER ── */
 .footer { position:relative; z-index:2; text-align:center; padding:40px 20px; font-family:'Great Vibes',cursive; font-size:clamp(1.5rem,4vw,2.2rem); color:var(--rose-deep); opacity:0.8; }
 
