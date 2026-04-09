@@ -62,3 +62,70 @@ function showLoveU() {
 
 function adjustCodePosition() {} // non usata ma tenuta per compatibilità
 function timeElapse(date) {}    // non usata — timer gestito nel JS principale
+
+document.addEventListener("DOMContentLoaded", function () {
+    var heart = document.getElementById("loveHeart");
+    var canvas = document.getElementById("explosionCanvas");
+    var ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    heart.addEventListener("click", function () {
+
+        // ingrandimento
+        heart.classList.add("fullscreen-heart");
+
+        setTimeout(function () {
+            explode();
+            flash();
+        }, 1200);
+    });
+
+    function flash() {
+        var f = document.createElement("div");
+        f.className = "flash";
+        document.body.appendChild(f);
+        setTimeout(() => f.remove(), 600);
+    }
+
+    function explode() {
+        var particles = [];
+
+        for (let i = 0; i < 80; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                dx: (Math.random() - 0.5) * 8,
+                dy: (Math.random() - 0.5) * 8,
+                size: Math.random() * 6 + 2,
+                life: 100
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.fillStyle = "pink";
+                
+                // forma cuoricino semplice
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.x += p.dx;
+                p.y += p.dy;
+                p.life--;
+            });
+
+            particles = particles.filter(p => p.life > 0);
+
+            if (particles.length > 0) {
+                requestAnimationFrame(draw);
+            }
+        }
+
+        draw();
+    }
+});
