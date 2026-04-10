@@ -279,102 +279,70 @@ $(document).ready(function(){
   setTimeout(function(){startHeartAnimation();},2000);
 });
 
-// ── CUORE CANVAS (fluido, no lag) ──
-(function() {
-  var wrap = document.getElementById('igHeartWrap');
-  var flash = document.getElementById('igFlash');
-  if (!wrap) return;
+// --- SOSTITUISCI LA VECCHIA FUNZIONE triggerExplosion CON QUESTA ---
+  function triggerExplosion() {
+    cancelAnimationFrame(raf);
+    
+    // 1. Espansione a tutto schermo
+    canvas.style.transition = "all 0.7s cubic-bezier(0.4, 0, 0.2, 1)";
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.zIndex = "10000";
+    canvas.style.transform = "scale(15)"; // Esplode verso l'utente
 
-  // Carica immagine cuore
-  var heartImg = new Image();
-  heartImg.src = 'https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png';
+    // 2. Bagliore Bianco
+    setTimeout(function() {
+      flash.style.transition = 'opacity 0.2s ease-in';
+      flash.style.opacity = '1';
 
-  var SIZE = Math.min(window.innerWidth, window.innerHeight, 280);
-  SIZE = Math.max(SIZE, 200);
-  var canvas = document.getElementById('igCanvas');
-  canvas.width = SIZE;
-  canvas.height = SIZE;
-  canvas.style.width = SIZE + 'px';
-  canvas.style.height = SIZE + 'px';
-  canvas.style.cursor = 'pointer';
-  canvas.style.touchAction = 'none';
-  canvas.style.userSelect = 'none';
-  canvas.style.outline = 'none';
-  canvas.style.webkitTapHighlightColor = 'transparent';
-  canvas.setAttribute('tabindex', '-1');
-  var ctx = canvas.getContext('2d');
+      setTimeout(function() {
+        // 3. Reset posizione (mentre è tutto bianco)
+        canvas.style.transition = "none";
+        canvas.style.position = "relative";
+        canvas.style.width = SIZE + 'px';
+        canvas.style.height = SIZE + 'px';
+        canvas.style.transform = "scale(1)";
+        canvas.style.zIndex = "10";
+        
+        scale = 1;
+        particles = [];
+        pressing = false;
+        draw();
 
-  var pressing = false;
-  var scale = 1;       // 1 = normale, cresce fino a MAX
-  var MAX = 18;
-  var GROW = 0.18;
-  var raf = null;
-  var exploded = false;
-  var particles = [];
-
-  // Dimensione base cuore
-  var BASE = SIZE * 0.78;
-
-  // Disegna frame
-  function draw() {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    var cx = SIZE / 2, cy = SIZE / 2;
-
-    // Bagliore radiale che cresce con la pressione
-    if (scale > 1) {
-      var glowAlpha = Math.min((scale - 1) / (MAX - 1) * 0.7, 0.7);
-      var glowRadius = BASE * 0.5 * Math.min(scale / 4, 1.5);
-      var glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowRadius + BASE * 0.3);
-      glow.addColorStop(0, 'rgba(232,80,120,' + glowAlpha + ')');
-      glow.addColorStop(0.5, 'rgba(232,160,168,' + (glowAlpha * 0.5) + ')');
-      glow.addColorStop(1, 'rgba(232,160,168,0)');
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, SIZE, SIZE);
-    }
-
-    // Cuore — grande e visibile
-    if (heartImg.complete && heartImg.naturalWidth > 0) {
-      ctx.save();
-      ctx.translate(cx, cy);
-      var s = BASE * Math.min(scale, 1.0);
-      if (scale > 1) s = BASE * (1 + (scale - 1) * 0.12);
-      s = Math.min(s, SIZE * 0.95);
-      ctx.drawImage(heartImg, -s/2, -s/2, s, s);
-      ctx.restore();
-    }
-
-    // Particelle
-    for (var i = particles.length - 1; i >= 0; i--) {
-      var p = particles[i];
-      p.x += Math.cos(p.angle) * p.speed;
-      p.y += Math.sin(p.angle) * p.speed;
-      p.life -= 0.022;
-      p.speed *= 0.97;
-      if (p.life <= 0) { particles.splice(i, 1); continue; }
-      ctx.save();
-      ctx.globalAlpha = p.life;
-      ctx.font = p.size + 'px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(p.emoji, p.x, p.y);
-      ctx.restore();
-    }
+        // 4. Inizia i 5 battiti
+        flash.style.opacity = '0';
+        setTimeout(() => {
+            startHeartBeats(5);
+        }, 300);
+        
+      }, 300);
+    }, 500);
   }
 
-  function loop() {
-    if (pressing && !exploded) {
-      scale = Math.min(scale + GROW, MAX);
-      // Spawn particelle continue
-      if (Math.random() < 0.25) spawnParticle();
-      // Esplosione al massimo
-      if (scale >= MAX) {
-        exploded = true;
-        triggerExplosion();
-        return;
+  // Nuova funzione per i 5 battiti
+  function startHeartBeats(count) {
+    let currentBeat = 0;
+    
+    function doBeat() {
+      if (currentBeat < count) {
+        canvas.classList.add('heart-beating');
+        
+        // Ogni battito dura 1.2s (come definito nel CSS)
+        setTimeout(() => {
+          canvas.classList.remove('heart-beating');
+          currentBeat++;
+          setTimeout(doBeat, 100); // Piccola pausa tra battiti
+        }, 1200);
+      } else {
+        // Fine dei 5 battiti: reset totale per poter cliccare di nuovo
+        exploded = false;
+        draw();
       }
     }
-    draw();
-    raf = requestAnimationFrame(loop);
+    doBeat();
   }
 
   function spawnParticle() {
