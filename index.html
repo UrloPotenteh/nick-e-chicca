@@ -479,21 +479,8 @@ phase = 'idle';
 });
 })();
 
-// ── BOLLA FOTO TIMELINE ──
+// ── POPUP FOTO TIMELINE ──
 (function() {
-var activeBubble = null;
-var activeDot    = null;
-
-function closeBubble() {
-if (!activeBubble) return;
-activeBubble.classList.add('closing');
-var b = activeBubble;
-setTimeout(function(){ b.remove(); }, 230);
-activeBubble = null;
-activeDot    = null;
-}
-
-// ── POPUP TIMELINE ──
 function openTlPopup(url) {
   var popup = document.getElementById('tlPopup');
   var img = document.getElementById('tlPopupImg');
@@ -512,11 +499,9 @@ document.querySelectorAll('.timeline-dot[data-photo]').forEach(function(dot) {
     if (url && url.indexOf('CAMBIA') === -1) openTlPopup(url);
   });
 });
-});
-
-// chiudi cliccando altrove
-document.addEventListener('click', function(e) {
-if (activeBubble && !activeBubble.contains(e.target)) closeBubble();
+var popup = document.getElementById('tlPopup');
+if (popup) popup.addEventListener('click', function(e) {
+  if (e.target === popup) closeTlPopup();
 });
 })();
 

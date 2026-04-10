@@ -405,11 +405,14 @@ body {
   transition: opacity 0.05s;
 }
 #igFlash.active {
-  animation: igWhiteFlash 0.9s ease-out forwards;
+  animation: igWhiteFlash 1.0s ease-out forwards;
 }
 @keyframes igWhiteFlash {
   0%   { opacity: 0; }
-  10%  { opacity: 1; }
+  8%   { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
+}
   60%  { opacity: 1; }
   100% { opacity: 0; }
 }
