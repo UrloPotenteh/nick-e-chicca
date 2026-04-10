@@ -322,9 +322,9 @@ if (!wrap) return;
 var pressing  = false;
 var phase     = 'idle'; // idle | growing | shrinking | exploding | beating
 var scale     = 1;
-var MAX       = 28;
-var GROW_SPEED   = 0.11;
-var SHRINK_SPEED = 0.28;
+var MAX       = 18;
+var GROW_SPEED   = 0.09;
+var SHRINK_SPEED = 0.22;
 var raf       = null;
 var beatTimer = null;
 
@@ -346,9 +346,9 @@ setTimeout(function(){ overlay.style.display = 'none'; }, 200);
 function growHeart() {
 if (!pressing || phase !== 'growing') return;
 scale = Math.min(scale + GROW_SPEED, MAX);
-heart.style.transform = 'scale(' + scale + ')';
-if (scale > 8) {
-var prog = Math.min((scale - 8) / (MAX - 8) * 1.2, 1);
+heart.style.transform = 'scale(' + scale + ') translateZ(0)';
+if (scale > 6) {
+var prog = Math.min((scale - 6) / (MAX - 6) * 1.2, 1);
 showOverlay(prog);
 }
 if (scale >= MAX) { triggerExplosion(); return; }
@@ -363,12 +363,13 @@ pressing = false;
 phase = 'shrinking';
 function shrink() {
 scale = Math.max(scale - SHRINK_SPEED, 1);
-heart.style.transform = 'scale(' + scale + ')';
-var prog = Math.max((scale - 8) / (MAX - 8), 0);
-if (scale > 8) { showOverlay(Math.min(prog * 1.2, 1)); }
+heart.style.transform = 'scale(' + scale + ') translateZ(0)';
+var prog = Math.max((scale - 6) / (MAX - 6), 0);
+if (scale > 6) { showOverlay(Math.min(prog * 1.2, 1)); }
 else { hideOverlay(); }
 if (scale <= 1) {
-heart.style.transform = 'scale(1)';
+heart.style.transform = 'scale(1) translateZ(0)';
+heart.style.willChange = 'auto';
 hideOverlay();
 phase = 'idle';
 return;
@@ -405,7 +406,7 @@ setTimeout(function() {
 // nascondi il cuore scalato, resetta
 overlayImg.style.transition = 'none';
 overlayImg.style.transform = 'scale(1)';
-heart.style.transform = 'scale(1)';
+heart.style.transform = 'scale(1) translateZ(0)';
 scale = 1;
 
 phase = 'beating';
@@ -435,6 +436,7 @@ if (phase !== 'idle') return;
 e.preventDefault();
 pressing = true;
 phase = 'growing';
+heart.style.willChange = 'transform';
 heart.style.transition = 'transform 0.07s ease';
 setTimeout(function(){ heart.style.transition = 'none'; }, 70);
 spawnBurst(false);
