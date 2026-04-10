@@ -254,7 +254,7 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
 @keyframes igParticle {
   0% { transform: rotate(var(--angle)) translateY(0) scale(0); opacity: 1; }
   60% { opacity: 1; }
-  100% { transform: rotate(var(--angle)) translateY(calc(var(--distance, 60px) * -1)) scale(1.2); opacity: 0; }
+  100% { transform: rotate(var(--angle)) translateY(-60px) scale(1.2); opacity: 0; }
 }
 
 /* Overlay fullscreen */
@@ -262,53 +262,51 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 9998;
+  z-index: 2147483646;
   background: rgba(253,240,242,0.0);
   align-items: center;
   justify-content: center;
   pointer-events: all;
   transition: opacity 0.1s ease, background 0.2s ease;
 }
+#igOverlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+#igOverlay.flash::after {
+  animation: igOverlayFlash 1.4s ease-out;
+}
+@keyframes igOverlayFlash {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; }
+}
 #igOverlay[style*="opacity: 1"],
 #igOverlay[style*="opacity:1"] {
   background: rgba(253,240,242,0.85);
 }
 #igOverlayImg {
+  position: relative;
+  z-index: 3;
   width: min(70vw, 70vh);
   height: min(70vw, 70vh);
   object-fit: contain;
   filter: drop-shadow(0 0 60px #e8a0a888);
   pointer-events: none;
-  animation: igPulseOverlay 1s ease-in-out infinite;
+  transform: scale(1);
 }
-#igOverlayImg.exploding {
-  animation: igPulseOverlay 1s ease-in-out infinite, igOverlayExplode 0.6s cubic-bezier(0.2,0.9,0.25,1) forwards;
+#igOverlayImg.is-beating {
+  animation: igPulseOverlay 0.65s ease-in-out 10;
 }
 @keyframes igPulseOverlay {
   0%,100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-}
-@keyframes igOverlayExplode {
-  0% { transform: scale(1); filter: drop-shadow(0 0 60px #e8a0a888) brightness(1); opacity: 1; }
-  55% { transform: scale(1.22); filter: drop-shadow(0 0 95px #ffd6e8) brightness(1.35); opacity: 1; }
-  100% { transform: scale(1.45); filter: drop-shadow(0 0 125px #fff0f8) brightness(1.55); opacity: 0; }
-}
-
-#igFlash {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, rgba(255,230,243,0.86) 35%, rgba(255,230,243,0.35) 58%, rgba(255,230,243,0) 78%);
-}
-#igFlash.active {
-  animation: igFlashBang 0.65s ease-out forwards;
-}
-@keyframes igFlashBang {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  60% { opacity: 0.75; }
-  100% { opacity: 0; }
+  50% { transform: scale(1.12); }
 }
 
 /* ── FOOTER ── */
