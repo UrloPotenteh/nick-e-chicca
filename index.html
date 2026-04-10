@@ -396,10 +396,9 @@ overlayImg.style.transition = 'transform 0.1s';
 overlayImg.style.transform = 'scale(1.25)';
 
 setTimeout(function() {
-// 2. flash bianco
+// 2. flash bianco (usando setTimeout invece del reflow forzato per evitare crash su iOS Safari)
 flash.classList.remove('active');
-void flash.offsetWidth; // reflow per re-triggherare
-flash.classList.add('active');
+setTimeout(function() { flash.classList.add('active'); }, 20);
 
 // 3. dopo che il flash si chiarisce (~600ms), mostra il battito
 setTimeout(function() {
@@ -488,11 +487,12 @@ function openTlPopup(url) {
   popup.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
-function closeTlPopup() {
+window.closeTlPopup = function() {
   document.getElementById('tlPopup').style.display = 'none';
   document.getElementById('tlPopupImg').src = '';
   document.body.style.overflow = '';
 }
+function closeTlPopup() { window.closeTlPopup(); }
 document.querySelectorAll('.timeline-dot[data-photo]').forEach(function(dot) {
   dot.addEventListener('click', function() {
     var url = dot.getAttribute('data-photo');
