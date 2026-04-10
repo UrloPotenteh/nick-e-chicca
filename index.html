@@ -89,22 +89,28 @@
   <h2 class="section-title">La nostra storia</h2>
   <div class="timeline">
     <div class="timeline-item">
-      <div class="timeline-dot"></div>
+      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA1.jpeg" title="Vedi foto"></div>
       <div class="timeline-date">8 gennaio 2026</div>
       <div class="timeline-title">Il nostro inizio <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Il giorno in cui tutto è cambiato — il giorno in cui sei diventata mia e io tuo...</div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-dot"></div>
+      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA2.jpeg" title="Vedi foto"></div>
       <div class="timeline-date">Da aggiungere</div>
       <div class="timeline-title">Un momento speciale <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Racconta qui un ricordo che volete custodire per sempre...</div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-dot"></div>
+      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA3.jpeg" title="Vedi foto"></div>
       <div class="timeline-date">Da aggiungere</div>
       <div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA4.jpeg" title="Vedi foto"></div>
+      <div class="timeline-date">Da aggiungere</div>
+      <div class="timeline-title">Il nostro ricordo <img src="https://em-content.zobj.net/source/apple/453/sparkling-heart_1f496.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+      <div class="timeline-text">Un giorno da tenere nel cuore per sempre...</div>
     </div>
   </div>
 </section>
@@ -153,8 +159,9 @@
 <!-- Overlay cuore fullscreen -->
 <div id="igOverlay">
   <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igOverlayImg">
-  <div id="igFlash"></div>
 </div>
+<!-- Flash bianco separato -->
+<div id="igFlash"></div>
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
@@ -287,84 +294,66 @@ $(document).ready(function(){
 
 // ── CUORE INSTAGRAM ──
 (function() {
-  var wrap = document.getElementById('igHeartWrap');
-  var heart = document.getElementById('igHeart');
-  var overlay = document.getElementById('igOverlay');
-  var overlayImg = document.getElementById('igOverlayImg');
-  var flash = document.getElementById('igFlash');
-  var burst = document.getElementById('igBurst');
+  var wrap        = document.getElementById('igHeartWrap');
+  var heart       = document.getElementById('igHeart');
+  var overlay     = document.getElementById('igOverlay');
+  var overlayImg  = document.getElementById('igOverlayImg');
+  var flash       = document.getElementById('igFlash');
+  var burst       = document.getElementById('igBurst');
   if (!wrap) return;
 
-  var pressing = false;
-  var exploding = false;
-  var scale = 1;
-  var MAX = 28; // scala massima (fullscreen)
-  var GROW_SPEED = 0.12;
-  var SHRINK_SPEED = 0.25;
-  var raf = null;
+  var pressing  = false;
+  var phase     = 'idle'; // idle | growing | shrinking | exploding | beating
+  var scale     = 1;
+  var MAX       = 28;
+  var GROW_SPEED   = 0.11;
+  var SHRINK_SPEED = 0.28;
+  var raf       = null;
+  var beatTimer = null;
 
+  /* ── mostra overlay ── */
+  function showOverlay(opacity) {
+    overlay.style.display = 'flex';
+    overlay.style.opacity = opacity;
+    overlay.style.background = opacity > 0.5
+      ? 'rgba(253,240,242,0.9)'
+      : 'rgba(253,240,242,0)';
+  }
+  function hideOverlay() {
+    overlay.style.opacity = '0';
+    overlay.style.background = 'rgba(253,240,242,0)';
+    setTimeout(function(){ overlay.style.display = 'none'; }, 200);
+  }
+
+  /* ── grow loop ── */
   function growHeart() {
-    if (!pressing || exploding) return;
+    if (!pressing || phase !== 'growing') return;
     scale = Math.min(scale + GROW_SPEED, MAX);
     heart.style.transform = 'scale(' + scale + ')';
-    // quando diventa molto grande mostra overlay
     if (scale > 8) {
-      var prog = (scale - 8) / (MAX - 8);
-      overlay.style.opacity = Math.min(prog * 1.2, 1);
-      overlay.style.display = 'flex';
+      var prog = Math.min((scale - 8) / (MAX - 8) * 1.2, 1);
+      showOverlay(prog);
     }
-    if (scale >= MAX) {
-      triggerFullscreenExplosion();
-      return;
-    }
+    if (scale >= MAX) { triggerExplosion(); return; }
     raf = requestAnimationFrame(growHeart);
   }
 
-  function hideOverlaySoon() {
-    overlay.style.opacity = 0;
-    setTimeout(function() {
-      overlay.style.display = 'none';
-    }, 220);
-  }
-
-  function resetHeartState() {
-    scale = 1;
-    heart.style.transform = 'scale(1)';
-    overlay.style.opacity = 0;
-    flash.classList.remove('active');
-    overlayImg.classList.remove('exploding');
-    setTimeout(function() {
-      overlay.style.display = 'none';
-    }, 220);
-  }
-
-  function triggerFullscreenExplosion() {
-    exploding = true;
-    pressing = false;
-    cancelAnimationFrame(raf);
-    overlay.style.display = 'flex';
-    overlay.style.opacity = 1;
-    overlayImg.classList.add('exploding');
-    flash.classList.add('active');
-    spawnBurst(true);
-    setTimeout(function() {
-      resetHeartState();
-      exploding = false;
-    }, 650);
-  }
-
+  /* ── shrink loop ── */
   function shrinkHeart() {
-    if (exploding) return;
+    if (phase === 'exploding' || phase === 'beating') return;
     cancelAnimationFrame(raf);
     pressing = false;
+    phase = 'shrinking';
     function shrink() {
       scale = Math.max(scale - SHRINK_SPEED, 1);
       heart.style.transform = 'scale(' + scale + ')';
       var prog = Math.max((scale - 8) / (MAX - 8), 0);
-      overlay.style.opacity = Math.min(prog * 1.2, 1);
+      if (scale > 8) { showOverlay(Math.min(prog * 1.2, 1)); }
+      else { hideOverlay(); }
       if (scale <= 1) {
-        hideOverlaySoon();
         heart.style.transform = 'scale(1)';
+        hideOverlay();
+        phase = 'idle';
         return;
       }
       requestAnimationFrame(shrink);
@@ -372,22 +361,75 @@ $(document).ready(function(){
     requestAnimationFrame(shrink);
   }
 
+  /* ── ESPLOSIONE + FLASH + BATTITO ── */
+  function triggerExplosion() {
+    phase = 'exploding';
+    pressing = false;
+    cancelAnimationFrame(raf);
+
+    // mostra overlay pieno
+    showOverlay(1);
+    overlayImg.classList.remove('is-beating');
+
+    // spawn burst grande
+    spawnBurst(true);
+
+    // 1. piccola vibrazione del cuore
+    overlayImg.style.transition = 'transform 0.1s';
+    overlayImg.style.transform = 'scale(1.25)';
+
+    setTimeout(function() {
+      // 2. flash bianco
+      flash.classList.remove('active');
+      void flash.offsetWidth; // reflow per re-triggherare
+      flash.classList.add('active');
+
+      // 3. dopo che il flash si chiarisce (~600ms), mostra il battito
+      setTimeout(function() {
+        // nascondi il cuore scalato, resetta
+        overlayImg.style.transition = 'none';
+        overlayImg.style.transform = 'scale(1)';
+        heart.style.transform = 'scale(1)';
+        scale = 1;
+
+        phase = 'beating';
+        showOverlay(1);
+
+        // avvia battito
+        overlayImg.classList.remove('is-beating');
+        void overlayImg.offsetWidth;
+        overlayImg.classList.add('is-beating');
+
+        // 10 secondi di battito poi sparisce e torna cliccabile
+        beatTimer = setTimeout(function() {
+          overlayImg.classList.remove('is-beating');
+          hideOverlay();
+          flash.classList.remove('active');
+          phase = 'idle';
+        }, 10000);
+
+      }, 620);
+
+    }, 100);
+  }
+
+  /* ── start press ── */
   function startPress(e) {
-    if (exploding) return;
+    if (phase !== 'idle') return;
     e.preventDefault();
     pressing = true;
-    // piccolo bounce iniziale
-    heart.style.transition = 'transform 0.08s ease';
-    setTimeout(function(){ heart.style.transition = 'none'; }, 80);
-    // particelle burst
-    spawnBurst();
+    phase = 'growing';
+    heart.style.transition = 'transform 0.07s ease';
+    setTimeout(function(){ heart.style.transition = 'none'; }, 70);
+    spawnBurst(false);
     raf = requestAnimationFrame(growHeart);
   }
 
+  /* ── particelle burst ── */
   function spawnBurst(isBig) {
     burst.innerHTML = '';
     var emojis = ['💕','✨','🌸','💖','⭐','💗','💫','🌟'];
-    var total = isBig ? 14 : 8;
+    var total = isBig ? 16 : 8;
     for (var i = 0; i < total; i++) {
       var el = document.createElement('div');
       el.className = 'ig-particle';
@@ -395,20 +437,85 @@ $(document).ready(function(){
       var angle = (i / total) * 360;
       el.style.setProperty('--angle', angle + 'deg');
       if (isBig) {
-        el.style.setProperty('--distance', (70 + Math.random() * 70) + 'px');
-        el.style.animationDuration = '0.9s';
+        el.style.setProperty('--distance', (80 + Math.random() * 80) + 'px');
+        el.style.animationDuration = '0.95s';
       }
       burst.appendChild(el);
-      setTimeout(function(el){ el.remove(); }, isBig ? 1000 : 700, el);
+      setTimeout(function(el){ el.remove(); }, isBig ? 1050 : 720, el);
     }
   }
 
-  wrap.addEventListener('mousedown', startPress);
-  wrap.addEventListener('touchstart', startPress, {passive:false});
-  document.addEventListener('mouseup', function(){ if(pressing) shrinkHeart(); });
-  document.addEventListener('touchend', function(){ if(pressing) shrinkHeart(); });
-  overlay.addEventListener('mouseup', shrinkHeart);
-  overlay.addEventListener('touchend', shrinkHeart);
+  wrap.addEventListener('mousedown',  startPress);
+  wrap.addEventListener('touchstart', startPress, {passive: false});
+  document.addEventListener('mouseup',   function(){ if (pressing) shrinkHeart(); });
+  document.addEventListener('touchend',  function(){ if (pressing) shrinkHeart(); });
+  // clic sull'overlay durante il battito = chiudi subito
+  overlay.addEventListener('click', function() {
+    if (phase === 'beating') {
+      clearTimeout(beatTimer);
+      overlayImg.classList.remove('is-beating');
+      hideOverlay();
+      flash.classList.remove('active');
+      phase = 'idle';
+    }
+  });
+})();
+
+// ── BOLLA FOTO TIMELINE ──
+(function() {
+  var activeBubble = null;
+  var activeDot    = null;
+
+  function closeBubble() {
+    if (!activeBubble) return;
+    activeBubble.classList.add('closing');
+    var b = activeBubble;
+    setTimeout(function(){ b.remove(); }, 230);
+    activeBubble = null;
+    activeDot    = null;
+  }
+
+  document.querySelectorAll('.timeline-dot[data-photo]').forEach(function(dot) {
+    dot.addEventListener('click', function(e) {
+      e.stopPropagation();
+      // stessa bolla → chiudi
+      if (activeDot === dot) { closeBubble(); return; }
+      // chiudi precedente
+      closeBubble();
+
+      var url = dot.getAttribute('data-photo');
+      if (!url || url.indexOf('CAMBIA') !== -1) return; // link placeholder, skip
+
+      var bubble = document.createElement('div');
+      bubble.className = 'timeline-photo-bubble visible';
+
+      var img = document.createElement('img');
+      img.src = url;
+      img.alt = 'Foto';
+      bubble.appendChild(img);
+
+      // posizione: vicino al pallino
+      var rect = dot.getBoundingClientRect();
+      var bW = Math.min(280, window.innerWidth * 0.8);
+      var left = rect.right + 12;
+      if (left + bW > window.innerWidth - 10) left = rect.left - bW - 12;
+      if (left < 8) left = 8;
+
+      bubble.style.left = left + 'px';
+      bubble.style.top  = Math.max(8, rect.top - 20) + 'px';
+      bubble.style.width  = bW + 'px';
+      bubble.style.height = bW + 'px';
+
+      document.body.appendChild(bubble);
+      activeBubble = bubble;
+      activeDot    = dot;
+    });
+  });
+
+  // chiudi cliccando altrove
+  document.addEventListener('click', function(e) {
+    if (activeBubble && !activeBubble.contains(e.target)) closeBubble();
+  });
 })();
 
 // MUSICA
