@@ -124,12 +124,15 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
-<!-- MESSAGGIO — modifica il testo qui sotto direttamente nel codice -->
+<!-- MESSAGGIO -->
 <section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
   <div class="love-message-section">
     <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
-    <p class="love-quote">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
+    <p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
     <p class="love-from">— Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></p>
+    <button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio</button>
+    <textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
+    <button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Salva</button>
   </div>
 </section>
 
@@ -140,11 +143,17 @@
   <h2 class="section-title">Il nostro cuore</h2>
   <p style="font-style:italic;color:var(--text-light);font-size:1rem;margin-bottom:28px;">tieni premuto per sentire il nostro amore 💘</p>
   <div class="ig-heart-wrap" id="igHeartWrap">
-    <canvas id="igCanvas"></canvas>
+    <div class="ig-heart" id="igHeart">
+      <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igHeartImg">
+    </div>
+    <div class="ig-burst" id="igBurst"></div>
   </div>
 </section>
-<!-- Flash bianco fullscreen -->
-<div id="igFlash"></div>
+
+<!-- Overlay cuore fullscreen -->
+<div id="igOverlay">
+  <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igOverlayImg">
+</div>
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
@@ -249,7 +258,8 @@ document.querySelectorAll('.timeline-item').forEach(function(i){obs.observe(i);}
 function loadPhoto(input){if(!input.files||!input.files[0])return;var slot=input.parentElement;var reader=new FileReader();reader.onload=function(e){var ex=slot.querySelector('img.photo');if(ex)ex.remove();var img=document.createElement('img');img.className='photo';img.src=e.target.result;slot.insertBefore(img,slot.firstChild);slot.querySelector('.upload-label').style.display='none';};reader.readAsDataURL(input.files[0]);}
 
 // MESSAGGIO
-// messaggio modificabile solo dal codice HTML
+function toggleEdit(){var ta=document.getElementById('loveTextarea'),sb=document.getElementById('loveSaveBtn'),eb=document.getElementById('loveEditBtn');var show=ta.style.display!=='block';ta.style.display=show?'block':'none';sb.style.display=show?'inline-block':'none';eb.innerHTML=show?'❌ Annulla':'<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio';if(show){ta.value=document.getElementById('loveQuoteText').textContent.includes('Scrivi')?'':document.getElementById('loveQuoteText').textContent;ta.focus();}}
+function saveMessage(){var text=document.getElementById('loveTextarea').value.trim();if(!text)return;document.getElementById('loveQuoteText').textContent=text;document.getElementById('loveTextarea').style.display='none';document.getElementById('loveSaveBtn').style.display='none';document.getElementById('loveEditBtn').innerHTML='<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Modifica messaggio';}
 
 // SUPABASE
 var SURL='https://aspnypmrcewkdaxuduwf.supabase.co',SKEY='sb_publishable_5c4RyzrrZIzuuoDXqKyXog_nT67Yj-x';
@@ -274,197 +284,85 @@ $(document).ready(function(){
   setTimeout(function(){startHeartAnimation();},2000);
 });
 
-// ── CUORE CANVAS ──
+// ── CUORE INSTAGRAM ──
 (function() {
   var wrap = document.getElementById('igHeartWrap');
-  var flash = document.getElementById('igFlash');
+  var heart = document.getElementById('igHeart');
+  var overlay = document.getElementById('igOverlay');
+  var burst = document.getElementById('igBurst');
   if (!wrap) return;
 
-  var SIZE = 200;
-  var canvas = document.getElementById('igCanvas');
-  canvas.width = SIZE; canvas.height = SIZE;
-  var ctx = canvas.getContext('2d');
-
-  var heartImg = new Image();
-  heartImg.crossOrigin = 'anonymous';
-  heartImg.src = 'https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png';
-
   var pressing = false;
-  var locked = false; // bloccato durante beatloop
+  var growTimer = null;
   var scale = 1;
-  var MAX = 14;
-  var GROW = 0.15;
+  var MAX = 28; // scala massima (fullscreen)
+  var GROW_SPEED = 0.12;
+  var SHRINK_SPEED = 0.25;
   var raf = null;
-  var particles = [];
 
-  // ── DRAW ──
-  function draw(sc) {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    var cx = SIZE/2, cy = SIZE/2;
-    var s = sc || scale;
-    var imgS = 90 + (s - 1) * 8;
-    imgS = Math.min(imgS, SIZE * 0.95);
-
-    // Bagliore radiale
-    if (s > 1.5) {
-      var alpha = Math.min((s - 1.5) / (MAX - 1.5), 1) * 0.55;
-      var grad = ctx.createRadialGradient(cx, cy, imgS*0.1, cx, cy, imgS*0.9);
-      grad.addColorStop(0, 'rgba(232,100,130,' + alpha + ')');
-      grad.addColorStop(0.5, 'rgba(232,160,168,' + (alpha*0.5) + ')');
-      grad.addColorStop(1, 'rgba(232,160,168,0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, SIZE, SIZE);
+  function growHeart() {
+    if (!pressing) return;
+    scale = Math.min(scale + GROW_SPEED, MAX);
+    heart.style.transform = 'scale(' + scale + ')';
+    // quando diventa molto grande mostra overlay
+    if (scale > 8) {
+      var prog = (scale - 8) / (MAX - 8);
+      overlay.style.opacity = Math.min(prog * 1.2, 1);
+      overlay.style.display = 'flex';
     }
-
-    // Cuore
-    if (heartImg.complete && heartImg.naturalWidth > 0) {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.drawImage(heartImg, -imgS/2, -imgS/2, imgS, imgS);
-      ctx.restore();
-    }
-
-    // Particelle
-    for (var i = particles.length - 1; i >= 0; i--) {
-      var p = particles[i];
-      p.x += Math.cos(p.a) * p.spd;
-      p.y += Math.sin(p.a) * p.spd;
-      p.spd *= 0.96;
-      p.life -= 0.022;
-      if (p.life <= 0) { particles.splice(i, 1); continue; }
-      ctx.save();
-      ctx.globalAlpha = p.life;
-      ctx.font = p.sz + 'px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(p.e, p.x, p.y);
-      ctx.restore();
-    }
+    raf = requestAnimationFrame(growHeart);
   }
 
-  function spawnBurst(n) {
-    var em = ['💕','✨','🌸','💖','⭐','💗','🌹','💫'];
-    for (var i = 0; i < n; i++) {
-      particles.push({
-        x: SIZE/2, y: SIZE/2,
-        a: (i/n)*Math.PI*2 + (Math.random()-0.5)*0.4,
-        spd: 3 + Math.random()*4,
-        life: 0.9 + Math.random()*0.3,
-        e: em[i % em.length],
-        sz: 14 + Math.random()*10
-      });
-    }
-  }
-
-  // ── GROW LOOP ──
-  function growLoop() {
-    if (!pressing || locked) return;
-    scale = Math.min(scale + GROW, MAX);
-    if (Math.random() < 0.2) spawnBurst(1);
-    draw();
-    if (scale >= MAX) { triggerExplosion(); return; }
-    raf = requestAnimationFrame(growLoop);
-  }
-
-  // ── ESPLOSIONE + BEATLOOP ──
-  function triggerExplosion() {
+  function shrinkHeart() {
     cancelAnimationFrame(raf);
     pressing = false;
-    locked = true;
-    spawnBurst(24);
-    draw();
-
-    // Flash bianco
-    flash.style.transition = 'opacity 0.12s ease';
-    flash.style.opacity = '1';
-
-    setTimeout(function() {
-      // Reset sotto il flash
-      scale = 1;
-      particles = [];
-
-      // Flash sfuma
-      flash.style.transition = 'opacity 0.45s ease';
-      flash.style.opacity = '0';
-
-      // Avvia beat automatico per 5 secondi
-      startBeatLoop(5000);
-    }, 180);
-  }
-
-  // ── BEAT LOOP: il cuore batte da solo ──
-  function startBeatLoop(duration) {
-    var beatEmojis = ['💕','✨','🌸','💖','💗'];
-    var t0 = performance.now();
-    var beatScale = 1;
-    var beatDir = 1;
-    var beatSpeed = 0.04;
-    var beatMax = 1.22;
-    var beatCount = 0;
-
-    function beatFrame(now) {
-      var elapsed = now - t0;
-      // Battito sinusoidale
-      beatScale = 1 + 0.22 * Math.abs(Math.sin(elapsed * 0.003 * Math.PI));
-      // Particelle a ogni picco
-      if (beatScale > 1.18 && Math.random() < 0.3) {
-        particles.push({
-          x: SIZE/2, y: SIZE/2,
-          a: Math.random()*Math.PI*2,
-          spd: 2 + Math.random()*3,
-          life: 0.8,
-          e: beatEmojis[Math.floor(Math.random()*beatEmojis.length)],
-          sz: 12 + Math.random()*8
-        });
+    function shrink() {
+      scale = Math.max(scale - SHRINK_SPEED, 1);
+      heart.style.transform = 'scale(' + scale + ')';
+      var prog = Math.max((scale - 8) / (MAX - 8), 0);
+      overlay.style.opacity = Math.min(prog * 1.2, 1);
+      if (scale <= 1) {
+        overlay.style.opacity = 0;
+        setTimeout(function(){ overlay.style.display = 'none'; }, 200);
+        heart.style.transform = 'scale(1)';
+        return;
       }
-      draw(beatScale);
-      if (elapsed < duration) {
-        raf = requestAnimationFrame(beatFrame);
-      } else {
-        // Fine beat — bounce finale e sblocca
-        particles = [];
-        draw(1);
-        locked = false;
-      }
+      requestAnimationFrame(shrink);
     }
-    raf = requestAnimationFrame(beatFrame);
+    requestAnimationFrame(shrink);
   }
 
-  // ── SHRINK se lasci prima del max ──
-  function shrink() {
-    cancelAnimationFrame(raf);
-    pressing = false;
-    function sh() {
-      scale = Math.max(scale - 0.3, 1);
-      draw();
-      if (scale > 1) requestAnimationFrame(sh);
-      else { scale = 1; particles = []; draw(); }
-    }
-    requestAnimationFrame(sh);
+  function startPress(e) {
+    e.preventDefault();
+    pressing = true;
+    // piccolo bounce iniziale
+    heart.style.transition = 'transform 0.08s ease';
+    setTimeout(function(){ heart.style.transition = 'none'; }, 80);
+    // particelle burst
+    spawnBurst();
+    raf = requestAnimationFrame(growHeart);
   }
 
-  // ── EVENTI ──
-  canvas.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-    if (locked) return;
-    pressing = true;
-    cancelAnimationFrame(raf);
-    spawnBurst(8);
-    raf = requestAnimationFrame(growLoop);
-  });
-  canvas.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    if (locked) return;
-    pressing = true;
-    cancelAnimationFrame(raf);
-    spawnBurst(8);
-    raf = requestAnimationFrame(growLoop);
-  }, {passive:false});
-  document.addEventListener('mouseup', function() { if (pressing) shrink(); });
-  document.addEventListener('touchend', function() { if (pressing) shrink(); });
+  function spawnBurst() {
+    burst.innerHTML = '';
+    var emojis = ['💕','✨','🌸','💖','⭐','💗'];
+    for (var i = 0; i < 8; i++) {
+      var el = document.createElement('div');
+      el.className = 'ig-particle';
+      el.textContent = emojis[i % emojis.length];
+      var angle = (i / 8) * 360;
+      el.style.setProperty('--angle', angle + 'deg');
+      burst.appendChild(el);
+      setTimeout(function(el){ el.remove(); }, 700, el);
+    }
+  }
 
-  heartImg.onload = function() { draw(); };
-  if (heartImg.complete) draw();
+  wrap.addEventListener('mousedown', startPress);
+  wrap.addEventListener('touchstart', startPress, {passive:false});
+  document.addEventListener('mouseup', function(){ if(pressing) shrinkHeart(); });
+  document.addEventListener('touchend', function(){ if(pressing) shrinkHeart(); });
+  overlay.addEventListener('mouseup', shrinkHeart);
+  overlay.addEventListener('touchend', shrinkHeart);
 })();
 
 // MUSICA
