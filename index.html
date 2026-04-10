@@ -102,8 +102,8 @@
     </div>
     <div class="timeline-item">
       <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA3.jpeg" title="Vedi foto"></div>
-      <div class="timeline-date">Da aggiungere</div>
-      <div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+      <div class="timeline-date">28 febbraio 2026</div>
+      <div class="timeline-title">Magnifica giornata al parco <img src="https://i.imgur.com/gE5t2xW.jpeg" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
       <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
     </div>
     <div class="timeline-item">
@@ -425,25 +425,7 @@ $(document).ready(function(){
     raf = requestAnimationFrame(growHeart);
   }
 
-  /* ── particelle burst ── */
-  function spawnBurst(isBig) {
-    burst.innerHTML = '';
-    var emojis = ['💕','✨','🌸','💖','⭐','💗','💫','🌟'];
-    var total = isBig ? 16 : 8;
-    for (var i = 0; i < total; i++) {
-      var el = document.createElement('div');
-      el.className = 'ig-particle';
-      el.textContent = emojis[i % emojis.length];
-      var angle = (i / total) * 360;
-      el.style.setProperty('--angle', angle + 'deg');
-      if (isBig) {
-        el.style.setProperty('--distance', (80 + Math.random() * 80) + 'px');
-        el.style.animationDuration = '0.95s';
-      }
-      burst.appendChild(el);
-      setTimeout(function(el){ el.remove(); }, isBig ? 1050 : 720, el);
-    }
-  }
+  
 
   wrap.addEventListener('mousedown',  startPress);
   wrap.addEventListener('touchstart', startPress, {passive: false});
