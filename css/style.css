@@ -405,12 +405,12 @@ body {
   transition: opacity 0.05s;
 }
 #igFlash.active {
-  animation: igWhiteFlash 0.6s ease-out forwards;
+  animation: igWhiteFlash 0.9s ease-out forwards;
 }
 @keyframes igWhiteFlash {
   0%   { opacity: 0; }
-  15%  { opacity: 1; }
-  55%  { opacity: 1; }
+  10%  { opacity: 1; }
+  60%  { opacity: 1; }
   100% { opacity: 0; }
 }
 
@@ -538,4 +538,20 @@ body {
   .timer-grid { gap:6px; }
   .section { padding:16px 16px 28px; }
   .gallery { grid-template-columns:repeat(2,1fr); }
+}
+
+/* ── PALLINI TIMELINE CLICCABILI ── */
+.timeline-dot.has-photo {
+  width: 20px !important;
+  height: 20px !important;
+  left: -33px !important;
+  top: 3px !important;
+  background: var(--rose-deep) !important;
+  box-shadow: 0 0 0 3px var(--rose-light), 0 0 12px #c4687a66 !important;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.timeline-dot.has-photo:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 4px var(--rose-light), 0 0 20px #c4687a99 !important;
 }

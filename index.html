@@ -87,6 +87,14 @@ più tempo passa, più mi fai innamorare
 <!-- STORIA -->
 <section class="section">
 <h2 class="section-title">La nostra storia</h2>
+<!-- Popup foto timeline -->
+<div id="tlPopup" style="display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;background:rgba(253,240,242,0.92);backdrop-filter:blur(8px);" onclick="closeTlPopup()">
+  <div style="position:relative;max-width:90vw;max-height:90vh;" onclick="event.stopPropagation()">
+    <img id="tlPopupImg" src="" style="max-width:90vw;max-height:80vh;border-radius:24px;box-shadow:0 12px 60px #e8a0a855;display:block;">
+    <button onclick="closeTlPopup()" style="position:absolute;top:-14px;right:-14px;background:white;border:2px solid var(--rose-light);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--rose-deep);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px #e8a0a833;">✕</button>
+  </div>
+</div>
+
 <div class="timeline">
 <div class="timeline-item">
 <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/3pNsR0V.jpeg" title="Vedi foto"></div>
@@ -102,10 +110,8 @@ più tempo passa, più mi fai innamorare
 </div>
 <div class="timeline-item">
 <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA3.jpeg" title="Vedi foto"></div>
-      <div class="timeline-date">Da aggiungere</div>
-      <div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
-      <div class="timeline-date">28 febbraio 2026</div>
-      <div class="timeline-title">Magnifica giornata al parco <img src="https://i.imgur.com/gE5t2xW.jpeg" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+<div class="timeline-date">Da aggiungere</div>
+<div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
 <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
 </div>
 <div class="timeline-item">
@@ -113,6 +119,18 @@ più tempo passa, più mi fai innamorare
 <div class="timeline-date">Da aggiungere</div>
 <div class="timeline-title">Il nostro ricordo <img src="https://em-content.zobj.net/source/apple/453/sparkling-heart_1f496.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
 <div class="timeline-text">Un giorno da tenere nel cuore per sempre...</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA5.jpeg" title="Vedi foto"></div>
+<div class="timeline-date">Da aggiungere</div>
+<div class="timeline-title">Una serata speciale <img src="https://em-content.zobj.net/source/apple/453/rose_1f339.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+<div class="timeline-text">Quella serata che non dimenticheremo mai...</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA6.jpeg" title="Vedi foto"></div>
+<div class="timeline-date">Da aggiungere</div>
+<div class="timeline-title">Sempre di più <img src="https://em-content.zobj.net/source/apple/453/two-hearts_1f495.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
+<div class="timeline-text">Ogni giorno ti amo un po' di più...</div>
 </div>
 </div>
 </section>
@@ -136,11 +154,8 @@ più tempo passa, più mi fai innamorare
 <section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
 <div class="love-message-section">
 <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
-<p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
+<p class="love-quote" id="loveQuoteText"><!-- Scrivi qui il tuo messaggio --></p>
 <p class="love-from">— Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></p>
-<button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio</button>
-<textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
-<button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Salva</button>
 </div>
 </section>
 
@@ -478,40 +493,24 @@ activeBubble = null;
 activeDot    = null;
 }
 
+// ── POPUP TIMELINE ──
+function openTlPopup(url) {
+  var popup = document.getElementById('tlPopup');
+  var img = document.getElementById('tlPopupImg');
+  img.src = url;
+  popup.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeTlPopup() {
+  document.getElementById('tlPopup').style.display = 'none';
+  document.getElementById('tlPopupImg').src = '';
+  document.body.style.overflow = '';
+}
 document.querySelectorAll('.timeline-dot[data-photo]').forEach(function(dot) {
-dot.addEventListener('click', function(e) {
-e.stopPropagation();
-// stessa bolla → chiudi
-if (activeDot === dot) { closeBubble(); return; }
-// chiudi precedente
-closeBubble();
-
-var url = dot.getAttribute('data-photo');
-if (!url || url.indexOf('CAMBIA') !== -1) return; // link placeholder, skip
-
-var bubble = document.createElement('div');
-bubble.className = 'timeline-photo-bubble visible';
-
-var img = document.createElement('img');
-img.src = url;
-img.alt = 'Foto';
-bubble.appendChild(img);
-
-// posizione: vicino al pallino
-var rect = dot.getBoundingClientRect();
-var bW = Math.min(280, window.innerWidth * 0.8);
-var left = rect.right + 12;
-if (left + bW > window.innerWidth - 10) left = rect.left - bW - 12;
-if (left < 8) left = 8;
-
-bubble.style.left = left + 'px';
-bubble.style.top  = Math.max(8, rect.top - 20) + 'px';
-bubble.style.width  = bW + 'px';
-bubble.style.height = bW + 'px';
-
-document.body.appendChild(bubble);
-activeBubble = bubble;
-activeDot    = dot;
+  dot.addEventListener('click', function() {
+    var url = dot.getAttribute('data-photo');
+    if (url && url.indexOf('CAMBIA') === -1) openTlPopup(url);
+  });
 });
 });
 
