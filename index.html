@@ -1,537 +1,172 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nick 💘 Chicca</title>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery.js"></script>
-<script src="js/garden.js"></script>
-<script src="js/functions.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nick & Chicca</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery.js"></script>
 </head>
 <body>
 
-<!-- LOCK SCREEN -->
-<div id="lockScreen">
-  <img class="bg" src="https://i.imgur.com/1cqpDVr.jpeg" alt="Lucky">
-  <div class="overlay"></div>
-  <div class="lock-content">
-    <h1>Nick & Chicca</h1>
-    <div class="card">
-      <p>Come si chiama la nostra mascotte?</p>
-      <input id="lockInput" type="password" placeholder="scrivi qui..." maxlength="20" onkeydown="if(event.key==='Enter')checkLock()">
-      <p id="lockError">Risposta non corretta, riprova <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;"></p>
-      <button onclick="checkLock()">Entra <img src="https://em-content.zobj.net/source/apple/453/sparkles_2728.png" style="width:1em;height:1em;vertical-align:middle;"></button>
-    </div>
-    <p class="lock-credit">fatto con amore da Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:1em;height:1em;vertical-align:middle;"></p>
-  </div>
-</div>
-
-<!-- PETALI E CUORI -->
-<div class="petal-container" id="petalContainer"></div>
-<div class="heart-container" id="heartContainer"></div>
-<!-- SPOTIFY BOX -->
-<div id="spotifyBox" class="spotify-card">
-    <div class="spotify-header">
-        <div class="spotify-title">
-            <img src="https://em-content.zobj.net/source/apple/453/sparkling-heart_1f496.png" style="width:1.1em;height:1.1em;">
-            <span>la nostra musica</span>
+    <!-- ==================== LOCK SCREEN ==================== -->
+    <div id="lockScreen">
+        <img src="https://i.imgur.com/0z5vKzL.jpg" class="bg" alt="sfondo">
+        <div class="overlay"></div>
+        <div class="lock-content">
+            <h1>Nick & Chicca</h1>
+            <div class="card">
+                <p>Come si chiama la nostra mascotte?</p>
+                <input type="text" id="mascotteInput" placeholder="Scrivi il nome...">
+                <div id="lockError">Risposta non corretta, riprova</div>
+                <button onclick="checkLock()">Entra</button>
+            </div>
+            <div class="lock-credit">fatto con amore da Nick</div>
         </div>
-        <button onclick="toggleSpotify()" class="spotify-close">✕</button>
     </div>
-    <div class="spotify-content">
-        <iframe style="border-radius:12px"
-            src="https://open.spotify.com/embed/playlist/0oUaAC0ptQbXg95TzlI1cL?utm_source=generator"
-            width="100%" height="152" frameBorder="0" allowfullscreen=""
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy">
-        </iframe>
+
+    <!-- ==================== ELEMENTI DECORATIVI ==================== -->
+    <div class="petal-container"></div>
+    <div class="heart-container"></div>
+
+    <!-- ==================== HERO ==================== -->
+    <section id="heroSection">
+        <div id="loveHeart">
+            <canvas id="garden"></canvas>
+            <div id="words">
+                <div id="messages">più tempo passa, più mi fai innamorare</div>
+                <div id="loveu">— Nick <span class="signature">❤️</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TIMER ==================== -->
+    <div class="timer-section">
+        <div class="timer-label">Insieme da</div>
+        <div class="timer-grid" id="timerGrid">
+            <!-- Popolato dal JS in functions.js -->
+        </div>
     </div>
-</div>
 
-<button class="music-btn" id="musicBtn" onclick="toggleSpotify()">
-    <img src="https://em-content.zobj.net/source/apple/453/musical-note_1f3b5.png" style="width:1.2em;height:1.2em;" id="musicIcon">
-</button>
-<audio id="bgMusic" loop><source src="" type="audio/mp3"></audio>
+    <div class="divider">✿</div>
 
-<!-- HERO: cuore animato centrato -->
-<section id="heroSection">
-  <div id="loveHeart">
-    <canvas id="garden"></canvas>
-    <div id="words">
-      <div id="messages">
-        Nick & Chicca
-      </div>
-      <div id="loveu">
-        più tempo passa, più mi fai innamorare
-        <div class="signature">— Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;"></div>
-      </div>
+    <!-- ==================== LA NOSTRA STORIA ==================== -->
+    <section class="section">
+        <h2 class="section-title">La nostra storia</h2>
+        <div class="timeline" id="timeline">
+            <!-- I tuoi elementi timeline qui -->
+        </div>
+    </section>
+
+    <div class="divider">✿</div>
+
+    <!-- ==================== GALLERIA ==================== -->
+    <section class="section">
+        <h2 class="section-title">I nostri ricordi</h2>
+        <div class="gallery">
+            <div class="photo-slot">Aggiungi foto</div>
+            <div class="photo-slot">Aggiungi foto</div>
+            <div class="photo-slot">Aggiungi foto</div>
+            <div class="photo-slot">Aggiungi foto</div>
+        </div>
+    </section>
+
+    <div class="divider">✿</div>
+
+    <!-- ==================== MESSAGGIO ==================== -->
+    <section class="section love-message-section">
+        <h2 class="section-title">Per te, Chicca</h2>
+        <div class="love-quote" id="loveMessage">Scrivi qui il tuo messaggio d'amore per Chicca...</div>
+        <div class="love-from">— Nick</div>
+        <button class="love-edit-btn" onclick="editMessage()">Scrivi messaggio</button>
+        <textarea class="love-textarea" id="messageTextarea"></textarea>
+        <button class="love-save-btn" onclick="saveMessage()">Salva</button>
+    </section>
+
+    <div class="divider">✿</div>
+
+    <!-- ==================== CUORE INTERATTIVO ==================== -->
+    <section class="section ig-heart-section">
+        <h2 class="section-title">Il nostro cuore</h2>
+        <p style="margin:15px 0 25px; color:#c4687a; font-style:italic;">
+            tieni premuto per sentire il nostro amore 💘
+        </p>
+        
+        <div id="heartWrap" class="ig-heart-wrap">
+            <div class="ig-heart">
+                <img src="https://i.imgur.com/9z4zKzL.png" alt="Cuore">
+            </div>
+        </div>
+    </section>
+
+    <!-- Overlay per cuore grande -->
+    <div id="igOverlay">
+        <img id="igOverlayImg" src="https://i.imgur.com/9z4zKzL.png" alt="Cuore grande">
     </div>
-  </div>
-</section>
+    <div id="igFlash"></div>
 
-<!-- TIMER -->
-<section class="timer-section">
-  <p class="timer-label"><img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;"> Insieme da <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1em;height:1em;vertical-align:middle;"></p>
-  <div class="timer-grid">
-    <div class="timer-block"><span class="timer-num" id="t-giorni">0</span><span class="timer-unit">giorni</span></div>
-    <div class="timer-block"><span class="timer-num" id="t-ore">0</span><span class="timer-unit">ore</span></div>
-    <div class="timer-block"><span class="timer-num" id="t-min">0</span><span class="timer-unit">minuti</span></div>
-    <div class="timer-block"><span class="timer-num" id="t-sec">0</span><span class="timer-unit">secondi</span></div>
-  </div>
-</section>
+    <div class="divider">✿</div>
 
-<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
+    <!-- ==================== SONDAGGIO ==================== -->
+    <section class="section">
+        <h2 class="section-title">Cosa vuoi fare?</h2>
+        <!-- Qui metti tutto il tuo codice del sondaggio -->
+    </section>
 
-<!-- STORIA -->
-<section class="section">
-  <h2 class="section-title">La nostra storia</h2>
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA1.jpeg" title="Vedi foto"></div>
-      <div class="timeline-date">8 gennaio 2026</div>
-      <div class="timeline-title">Il nostro inizio <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
-      <div class="timeline-text">Il giorno in cui tutto è cambiato — il giorno in cui sei diventata mia e io tuo...</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA2.jpeg" title="Vedi foto"></div>
-      <div class="timeline-date">Da aggiungere</div>
-      <div class="timeline-title">Un momento speciale <img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
-      <div class="timeline-text">Racconta qui un ricordo che volete custodire per sempre...</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA3.jpeg" title="Vedi foto"></div>
-      <div class="timeline-date">Da aggiungere</div>
-      <div class="timeline-title">Ancora insieme <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
-      <div class="timeline-text">Ogni giorno con te è un capitolo nuovo...</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot has-photo" data-photo="https://i.imgur.com/CAMBIA4.jpeg" title="Vedi foto"></div>
-      <div class="timeline-date">Da aggiungere</div>
-      <div class="timeline-title">Il nostro ricordo <img src="https://em-content.zobj.net/source/apple/453/sparkling-heart_1f496.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></div>
-      <div class="timeline-text">Un giorno da tenere nel cuore per sempre...</div>
-    </div>
-  </div>
-</section>
+    <!-- ==================== MUSIC ==================== -->
+    <button class="music-btn" id="musicBtn">♪</button>
 
-<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="js/garden.js"></script>
+    <script src="js/functions.js"></script>
 
-<!-- FOTO -->
-<section class="section">
-  <h2 class="section-title">I nostri ricordi</h2>
-  <div class="gallery">
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/cherry-blossom_1f338.png" style="width:1.8rem;height:1.8rem;"></div><span>Aggiungi foto</span></div></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/camera-with-flash_1f4f8.png" style="width:1.8rem;height:1.8rem;"></div><span>Aggiungi foto</span></div></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/two-hearts_1f495.png" style="width:1.8rem;height:1.8rem;"></div><span>Aggiungi foto</span></div></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="loadPhoto(this)"><div class="upload-label"><div class="photo-icon"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1.8rem;height:1.8rem;"></div><span>Aggiungi foto</span></div></div>
-  </div>
-</section>
+    <script>
+    // ====================== CUORE INTERATTIVO MIGLIORATO ======================
+    const heartWrap = document.getElementById('heartWrap');
+    const overlay = document.getElementById('igOverlay');
+    const largeHeart = document.getElementById('igOverlayImg');
+    const flash = document.getElementById('igFlash');
+    let isAnimating = false;
 
-<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
+    function triggerHeartExplosion() {
+        if (isAnimating) return;
+        isAnimating = true;
 
-<!-- MESSAGGIO -->
-<section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
-  <div class="love-message-section">
-    <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
-    <p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
-    <p class="love-from">— Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></p>
-    <button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio</button>
-    <textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
-    <button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Salva</button>
-  </div>
-</section>
+        overlay.classList.add('active');
+        largeHeart.style.transition = 'transform 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+        largeHeart.style.transform = 'scale(0.3)';
 
-<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
+        void largeHeart.offsetWidth;
+        largeHeart.style.transform = 'scale(1.08)';
 
-<!-- CUORE INSTAGRAM -->
-<section class="section ig-heart-section" style="max-width:400px;text-align:center;">
-  <h2 class="section-title">Il nostro cuore</h2>
-  <p style="font-style:italic;color:var(--text-light);font-size:1rem;margin-bottom:28px;">tieni premuto per sentire il nostro amore 💘</p>
-  <div class="ig-heart-wrap" id="igHeartWrap">
-    <div class="ig-heart" id="igHeart">
-      <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igHeartImg">
-    </div>
-    <div class="ig-burst" id="igBurst"></div>
-  </div>
-</section>
+        setTimeout(() => {
+            flash.style.transition = 'opacity 80ms linear';
+            flash.style.opacity = '1';
 
-<!-- Overlay cuore fullscreen -->
-<div id="igOverlay">
-  <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igOverlayImg">
-</div>
-<!-- Flash bianco separato -->
-<div id="igFlash"></div>
+            setTimeout(() => {
+                flash.style.transition = 'opacity 280ms linear';
+                flash.style.opacity = '0';
 
-<div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
+                setTimeout(() => {
+                    largeHeart.style.transition = 'transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                    largeHeart.style.transform = 'scale(1)';
+                    largeHeart.classList.add('beating');
 
-<!-- SONDAGGIO -->
-<section class="section" style="max-width:680px;">
-  <h2 class="section-title">Cosa vuoi fare?</h2>
-  <div id="pollQuestion" style="text-align:center;font-style:italic;font-size:clamp(1.1rem,3vw,1.35rem);color:var(--text-light);margin-bottom:24px;">Dove vuoi uscire questo weekend?</div>
-  <div id="pollOptions" class="poll-options"></div>
-  <div id="pollResult" class="poll-result" style="display:none;"></div>
-  <button class="poll-reset-btn" id="pollResetBtn" style="display:none;" onclick="resetVote()"><img src="https://em-content.zobj.net/source/apple/453/counterclockwise-arrows-button_1f504.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Cambia risposta</button>
-  <div style="text-align:center;margin-top:32px;">
-    <button class="nick-toggle-btn" onclick="toggleNickPanel()"><img src="https://em-content.zobj.net/source/apple/453/locked_1f512.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Pannello Nick</button>
-  </div>
-  <div id="nickPanel" style="display:none;margin-top:20px;">
-    <div id="nickPinArea" class="nick-box">
-      <p style="font-style:italic;color:var(--text-light);margin-bottom:12px;">Inserisci il PIN per accedere</p>
-      <input type="password" id="nickPinInput" class="nick-input" placeholder="PIN segreto" maxlength="6">
-      <button class="love-edit-btn" style="margin-top:12px;" onclick="checkPin()">Accedi</button>
-      <p id="pinError" style="color:var(--rose-deep);margin-top:8px;font-size:0.9rem;display:none;">PIN errato ❌</p>
-    </div>
-    <div id="nickEditor" style="display:none;" class="nick-box">
-      <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:16px;"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Modifica il sondaggio</p>
-      <label class="nick-label">Domanda</label>
-      <input type="text" id="editQuestion" class="nick-input" placeholder="Domanda...">
-      <label class="nick-label" style="margin-top:12px;">Opzione 1</label>
-      <input type="text" id="editOpt1" class="nick-input">
-      <label class="nick-label" style="margin-top:8px;">Opzione 2</label>
-      <input type="text" id="editOpt2" class="nick-input">
-      <label class="nick-label" style="margin-top:8px;">Opzione 3</label>
-      <input type="text" id="editOpt3" class="nick-input">
-      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
-        <button class="love-edit-btn" onclick="savePoll()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Salva sondaggio</button>
-        <button class="love-save-btn" style="display:inline-block;" onclick="clearVoteAdmin()"><img src="https://em-content.zobj.net/source/apple/453/wastebasket_1f5d1-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Cancella risposta</button>
-      </div>
-      <p id="saveMsg" style="color:var(--green);margin-top:10px;font-size:0.9rem;display:none;"><img src="https://em-content.zobj.net/source/apple/453/check-mark-button_2705.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Aggiornato!</p>
-    </div>
-  </div>
-</section>
-
-<div class="footer">Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.8em;height:0.8em;vertical-align:middle;"> Chicca</div>
-
-<script>
-// LOCK
-function checkLock(){
-  var val=document.getElementById('lockInput').value.trim().toLowerCase();
-  if(val==='lucky'){sessionStorage.setItem('unlocked','1');unlockWithTransition();}
-  else{
-    document.getElementById('lockError').style.display='block';
-    var inp=document.getElementById('lockInput');
-    [[-8,0],[8,80],[-6,160],[6,240],[0,320]].forEach(function(s){setTimeout(function(){inp.style.transform='translateX('+s[0]+'px)';},s[1]);});
-  }
-}
-function unlockWithTransition(){
-  var ls=document.getElementById('lockScreen');
-  var emojis=['💘','🌸','💕','✨','💖','🌹'];
-  for(var i=0;i<18;i++){(function(i){setTimeout(function(){
-    var h=document.createElement('div');
-    h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-    h.style.cssText='position:fixed;z-index:10001;pointer-events:none;font-size:'+(24+Math.random()*24)+'px;left:'+(Math.random()*100)+'vw;top:'+(Math.random()*100)+'vh;animation:burstHeart 0.9s ease forwards;';
-    document.body.appendChild(h);setTimeout(function(){h.remove();},900);
-  },i*60);})(i);}
-  var ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;z-index:10000;background:white;opacity:0;transition:opacity 0.6s ease;pointer-events:none;';
-  document.body.appendChild(ov);
-  setTimeout(function(){ov.style.opacity='1';},400);
-  setTimeout(function(){ls.style.display='none';ov.style.transition='opacity 0.8s ease';ov.style.opacity='0';setTimeout(function(){ov.remove();},800);},1000);
-}
-var bs=document.createElement('style');
-bs.textContent='@keyframes burstHeart{0%{transform:scale(0);opacity:1;}60%{transform:scale(1.4) rotate(20deg);opacity:1;}100%{transform:scale(0.8) translateY(-60px);opacity:0;}}';
-document.head.appendChild(bs);
-if(sessionStorage.getItem('unlocked')==='1')document.getElementById('lockScreen').style.display='none';
-
-// PETALI
-var pc=document.getElementById('petalContainer');
-for(var i=0;i<18;i++){var p=document.createElement('div');p.classList.add('petal');var sz=14+Math.random()*14;p.style.cssText='left:'+Math.random()*100+'%;width:'+sz+'px;height:'+(sz*1.2)+'px;animation-duration:'+(7+Math.random()*8)+'s;animation-delay:'+(-Math.random()*12)+'s;border-radius:'+(60+Math.random()*30)+'% 0 '+(60+Math.random()*30)+'% 0;';pc.appendChild(p);}
-
-// CUORI
-var hc=document.getElementById('heartContainer');
-var heartImgs=['heart-with-arrow_1f498','cherry-blossom_1f338','two-hearts_1f495','sparkling-heart_1f496','rose_1f339'];
-function spawnHeart(){
-  var h=document.createElement('div');h.classList.add('floating-heart');
-  var im=document.createElement('img');
-  im.src='https://em-content.zobj.net/source/apple/453/'+heartImgs[Math.floor(Math.random()*heartImgs.length)]+'.png';
-  var sz=20+Math.random()*20; im.style.cssText='width:'+sz+'px;height:'+sz+'px;';
-  h.appendChild(im);
-  var dur=6+Math.random()*8;
-  h.style.cssText='left:'+(5+Math.random()*90)+'%;animation-duration:'+dur+'s;';
-  hc.appendChild(h);setTimeout(function(){h.remove();},dur*1000);
-}
-setInterval(spawnHeart,900);
-
-// TIMER
-var start=new Date('2026-01-08T18:11:00');
-function updateTimer(){var diff=new Date()-start;if(diff<0)return;document.getElementById('t-giorni').textContent=Math.floor(diff/86400000);document.getElementById('t-ore').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');document.getElementById('t-min').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');document.getElementById('t-sec').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');}
-updateTimer();setInterval(updateTimer,1000);
-
-// TIMELINE
-var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.2});
-document.querySelectorAll('.timeline-item').forEach(function(i){obs.observe(i);});
-
-// FOTO
-function loadPhoto(input){if(!input.files||!input.files[0])return;var slot=input.parentElement;var reader=new FileReader();reader.onload=function(e){var ex=slot.querySelector('img.photo');if(ex)ex.remove();var img=document.createElement('img');img.className='photo';img.src=e.target.result;slot.insertBefore(img,slot.firstChild);slot.querySelector('.upload-label').style.display='none';};reader.readAsDataURL(input.files[0]);}
-
-// MESSAGGIO
-function toggleEdit(){var ta=document.getElementById('loveTextarea'),sb=document.getElementById('loveSaveBtn'),eb=document.getElementById('loveEditBtn');var show=ta.style.display!=='block';ta.style.display=show?'block':'none';sb.style.display=show?'inline-block':'none';eb.innerHTML=show?'❌ Annulla':'<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio';if(show){ta.value=document.getElementById('loveQuoteText').textContent.includes('Scrivi')?'':document.getElementById('loveQuoteText').textContent;ta.focus();}}
-function saveMessage(){var text=document.getElementById('loveTextarea').value.trim();if(!text)return;document.getElementById('loveQuoteText').textContent=text;document.getElementById('loveTextarea').style.display='none';document.getElementById('loveSaveBtn').style.display='none';document.getElementById('loveEditBtn').innerHTML='<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Modifica messaggio';}
-
-// SUPABASE
-var SURL='https://aspnypmrcewkdaxuduwf.supabase.co',SKEY='sb_publishable_5c4RyzrrZIzuuoDXqKyXog_nT67Yj-x';
-function dbGet(k){return fetch(SURL+'/rest/v1/poll?key=eq.'+k+'&select=value',{headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}).then(function(r){return r.json();}).then(function(d){return d.length?d[0].value:null;});}
-function dbSet(k,v){return fetch(SURL+'/rest/v1/poll',{method:'POST',headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify({key:k,value:v})});}
-function dbDelete(k){return fetch(SURL+'/rest/v1/poll?key=eq.'+k,{method:'DELETE',headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});}
-
-// SONDAGGIO
-var NICK_PIN='2207',DEFAULT_POLL={question:'Dove vuoi uscire questo weekend?',options:['🍕 Pizzeria','🎬 Cinema','🌊 Passeggiata al mare']};
-function getPoll(){return dbGet('poll_data').then(function(r){try{return r?JSON.parse(r):DEFAULT_POLL;}catch(e){return DEFAULT_POLL;}});}
-function renderPoll(){getPoll().then(function(poll){dbGet('poll_vote').then(function(vote){document.getElementById('pollQuestion').textContent=poll.question;var od=document.getElementById('pollOptions'),rd=document.getElementById('pollResult'),rb=document.getElementById('pollResetBtn');od.innerHTML='';if(vote){od.style.display='flex';rd.style.display='block';rb.style.display='block';poll.options.forEach(function(opt){var btn=document.createElement('button');btn.className='poll-option-btn'+(opt===vote?' selected':'');btn.style.opacity=opt===vote?'1':'0.45';btn.textContent=(opt===vote?'✅ ':'')+opt;btn.disabled=true;od.appendChild(btn);});rd.innerHTML='<div class="poll-result-text">Chicca ha scelto! 🌸</div><div class="poll-result-sub">Nick lo sa già 💘</div>';}else{od.style.display='flex';rd.style.display='none';rb.style.display='none';poll.options.forEach(function(opt){var btn=document.createElement('button');btn.className='poll-option-btn';btn.textContent=opt;btn.onclick=function(){selectOption(opt,btn);};od.appendChild(btn);});}});});}
-function selectOption(opt,btn){document.querySelectorAll('.poll-option-btn').forEach(function(b){b.classList.remove('selected');});btn.classList.add('selected');setTimeout(function(){dbSet('poll_vote',opt).then(function(){renderPoll();for(var i=0;i<5;i++)setTimeout(spawnHeart,i*150);});},500);}
-function resetVote(){dbDelete('poll_vote').then(renderPoll);}
-function toggleNickPanel(){var p=document.getElementById('nickPanel');p.style.display=p.style.display==='none'?'block':'none';}
-function checkPin(){if(document.getElementById('nickPinInput').value===NICK_PIN){document.getElementById('nickPinArea').style.display='none';document.getElementById('nickEditor').style.display='block';getPoll().then(function(poll){document.getElementById('editQuestion').value=poll.question;document.getElementById('editOpt1').value=poll.options[0]||'';document.getElementById('editOpt2').value=poll.options[1]||'';document.getElementById('editOpt3').value=poll.options[2]||'';});}else{document.getElementById('pinError').style.display='block';}}
-function savePoll(){var q=document.getElementById('editQuestion').value.trim(),o1=document.getElementById('editOpt1').value.trim(),o2=document.getElementById('editOpt2').value.trim(),o3=document.getElementById('editOpt3').value.trim();if(!q||!o1||!o2||!o3)return;dbSet('poll_data',JSON.stringify({question:q,options:[o1,o2,o3]})).then(function(){dbDelete('poll_vote').then(renderPoll);var m=document.getElementById('saveMsg');m.style.display='block';setTimeout(function(){m.style.display='none';},2500);});}
-function clearVoteAdmin(){dbDelete('poll_vote').then(renderPoll);}
-renderPoll();
-
-// AVVIA ANIMAZIONE CUORE
-$(document).ready(function(){
-  setTimeout(function(){startHeartAnimation();},2000);
-});
-
-// ── CUORE INSTAGRAM ──
-(function() {
-  var wrap        = document.getElementById('igHeartWrap');
-  var heart       = document.getElementById('igHeart');
-  var overlay     = document.getElementById('igOverlay');
-  var overlayImg  = document.getElementById('igOverlayImg');
-  var flash       = document.getElementById('igFlash');
-  var burst       = document.getElementById('igBurst');
-  if (!wrap) return;
-
-  var pressing  = false;
-  var phase     = 'idle'; // idle | growing | shrinking | exploding | beating
-  var scale     = 1;
-  var MAX       = 28;
-  var GROW_SPEED   = 0.11;
-  var SHRINK_SPEED = 0.28;
-  var raf       = null;
-  var beatTimer = null;
-
-  /* ── mostra overlay ── */
-  function showOverlay(opacity) {
-    overlay.style.display = 'flex';
-    overlay.style.opacity = opacity;
-    overlay.style.background = opacity > 0.5
-      ? 'rgba(253,240,242,0.9)'
-      : 'rgba(253,240,242,0)';
-  }
-  function hideOverlay() {
-    overlay.style.opacity = '0';
-    overlay.style.background = 'rgba(253,240,242,0)';
-    setTimeout(function(){ overlay.style.display = 'none'; }, 200);
-  }
-
-  /* ── grow loop ── */
-  function growHeart() {
-    if (!pressing || phase !== 'growing') return;
-    scale = Math.min(scale + GROW_SPEED, MAX);
-    heart.style.transform = 'scale(' + scale + ')';
-    if (scale > 8) {
-      var prog = Math.min((scale - 8) / (MAX - 8) * 1.2, 1);
-      showOverlay(prog);
+                    setTimeout(() => {
+                        largeHeart.classList.remove('beating');
+                        isAnimating = false;
+                    }, 5200);
+                }, 300);
+            }, 90);
+        }, 420);
     }
-    if (scale >= MAX) { triggerExplosion(); return; }
-    raf = requestAnimationFrame(growHeart);
-  }
 
-  /* ── shrink loop ── */
-  function shrinkHeart() {
-    if (phase === 'exploding' || phase === 'beating') return;
-    cancelAnimationFrame(raf);
-    pressing = false;
-    phase = 'shrinking';
-    function shrink() {
-      scale = Math.max(scale - SHRINK_SPEED, 1);
-      heart.style.transform = 'scale(' + scale + ')';
-      var prog = Math.max((scale - 8) / (MAX - 8), 0);
-      if (scale > 8) { showOverlay(Math.min(prog * 1.2, 1)); }
-      else { hideOverlay(); }
-      if (scale <= 1) {
-        heart.style.transform = 'scale(1)';
-        hideOverlay();
-        phase = 'idle';
-        return;
-      }
-      requestAnimationFrame(shrink);
-    }
-    requestAnimationFrame(shrink);
-  }
+    heartWrap.addEventListener('click', triggerHeartExplosion);
+    heartWrap.addEventListener('touchstart', (e) => { e.preventDefault(); triggerHeartExplosion(); });
 
-  /* ── ESPLOSIONE + FLASH + BATTITO ── */
-  function triggerExplosion() {
-    phase = 'exploding';
-    pressing = false;
-    cancelAnimationFrame(raf);
-
-    // mostra overlay pieno
-    showOverlay(1);
-    overlayImg.classList.remove('is-beating');
-
-    // spawn burst grande
-    spawnBurst(true);
-
-    // 1. piccola vibrazione del cuore
-    overlayImg.style.transition = 'transform 0.1s';
-    overlayImg.style.transform = 'scale(1.25)';
-
-    setTimeout(function() {
-      // 2. flash bianco
-      flash.classList.remove('active');
-      void flash.offsetWidth; // reflow per re-triggherare
-      flash.classList.add('active');
-
-      // 3. dopo che il flash si chiarisce (~600ms), mostra il battito
-      setTimeout(function() {
-        // nascondi il cuore scalato, resetta
-        overlayImg.style.transition = 'none';
-        overlayImg.style.transform = 'scale(1)';
-        heart.style.transform = 'scale(1)';
-        scale = 1;
-
-        phase = 'beating';
-        showOverlay(1);
-
-        // avvia battito
-        overlayImg.classList.remove('is-beating');
-        void overlayImg.offsetWidth;
-        overlayImg.classList.add('is-beating');
-
-        // 10 secondi di battito poi sparisce e torna cliccabile
-        beatTimer = setTimeout(function() {
-          overlayImg.classList.remove('is-beating');
-          hideOverlay();
-          flash.classList.remove('active');
-          phase = 'idle';
-        }, 10000);
-
-      }, 620);
-
-    }, 100);
-  }
-
-  /* ── start press ── */
-  function startPress(e) {
-    if (phase !== 'idle') return;
-    e.preventDefault();
-    pressing = true;
-    phase = 'growing';
-    heart.style.transition = 'transform 0.07s ease';
-    setTimeout(function(){ heart.style.transition = 'none'; }, 70);
-    spawnBurst(false);
-    raf = requestAnimationFrame(growHeart);
-  }
-
-  /* ── particelle burst ── */
-  function spawnBurst(isBig) {
-    burst.innerHTML = '';
-    var emojis = ['💕','✨','🌸','💖','⭐','💗','💫','🌟'];
-    var total = isBig ? 16 : 8;
-    for (var i = 0; i < total; i++) {
-      var el = document.createElement('div');
-      el.className = 'ig-particle';
-      el.textContent = emojis[i % emojis.length];
-      var angle = (i / total) * 360;
-      el.style.setProperty('--angle', angle + 'deg');
-      if (isBig) {
-        el.style.setProperty('--distance', (80 + Math.random() * 80) + 'px');
-        el.style.animationDuration = '0.95s';
-      }
-      burst.appendChild(el);
-      setTimeout(function(el){ el.remove(); }, isBig ? 1050 : 720, el);
-    }
-  }
-
-  wrap.addEventListener('mousedown',  startPress);
-  wrap.addEventListener('touchstart', startPress, {passive: false});
-  document.addEventListener('mouseup',   function(){ if (pressing) shrinkHeart(); });
-  document.addEventListener('touchend',  function(){ if (pressing) shrinkHeart(); });
-  // clic sull'overlay durante il battito = chiudi subito
-  overlay.addEventListener('click', function() {
-    if (phase === 'beating') {
-      clearTimeout(beatTimer);
-      overlayImg.classList.remove('is-beating');
-      hideOverlay();
-      flash.classList.remove('active');
-      phase = 'idle';
-    }
-  });
-})();
-
-// ── BOLLA FOTO TIMELINE ──
-(function() {
-  var activeBubble = null;
-  var activeDot    = null;
-
-  function closeBubble() {
-    if (!activeBubble) return;
-    activeBubble.classList.add('closing');
-    var b = activeBubble;
-    setTimeout(function(){ b.remove(); }, 230);
-    activeBubble = null;
-    activeDot    = null;
-  }
-
-  document.querySelectorAll('.timeline-dot[data-photo]').forEach(function(dot) {
-    dot.addEventListener('click', function(e) {
-      e.stopPropagation();
-      // stessa bolla → chiudi
-      if (activeDot === dot) { closeBubble(); return; }
-      // chiudi precedente
-      closeBubble();
-
-      var url = dot.getAttribute('data-photo');
-      if (!url || url.indexOf('CAMBIA') !== -1) return; // link placeholder, skip
-
-      var bubble = document.createElement('div');
-      bubble.className = 'timeline-photo-bubble visible';
-
-      var img = document.createElement('img');
-      img.src = url;
-      img.alt = 'Foto';
-      bubble.appendChild(img);
-
-      // posizione: vicino al pallino
-      var rect = dot.getBoundingClientRect();
-      var bW = Math.min(280, window.innerWidth * 0.8);
-      var left = rect.right + 12;
-      if (left + bW > window.innerWidth - 10) left = rect.left - bW - 12;
-      if (left < 8) left = 8;
-
-      bubble.style.left = left + 'px';
-      bubble.style.top  = Math.max(8, rect.top - 20) + 'px';
-      bubble.style.width  = bW + 'px';
-      bubble.style.height = bW + 'px';
-
-      document.body.appendChild(bubble);
-      activeBubble = bubble;
-      activeDot    = dot;
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay && !isAnimating) overlay.classList.remove('active');
     });
-  });
-
-  // chiudi cliccando altrove
-  document.addEventListener('click', function(e) {
-    if (activeBubble && !activeBubble.contains(e.target)) closeBubble();
-  });
-})();
-
-// MUSICA
-var spotifyOpen = false;
-function toggleSpotify() {
-  var box = document.getElementById('spotifyBox');
-  var btn = document.getElementById('musicBtn');
-  spotifyOpen = !spotifyOpen;
-  if (spotifyOpen) {
-    box.classList.add('active');
-    btn.classList.add('playing');
-  } else {
-    box.classList.remove('active');
-    btn.classList.remove('playing');
-  }
-}
-</script>
+    </script>
 </body>
 </html>
