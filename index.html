@@ -124,12 +124,15 @@
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
-<!-- MESSAGGIO — modifica il testo qui sotto direttamente nel codice -->
+<!-- MESSAGGIO -->
 <section style="position:relative;z-index:2;padding:20px 16px 40px;max-width:760px;margin:0 auto;">
   <div class="love-message-section">
     <h2 class="section-title" style="margin-bottom:20px;">Per te, Chicca</h2>
-    <p class="love-quote">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
+    <p class="love-quote" id="loveQuoteText">Scrivi qui il tuo messaggio d'amore per Chicca...</p>
     <p class="love-from">— Nick <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" style="width:0.9em;height:0.9em;vertical-align:middle;"></p>
+    <button class="love-edit-btn" id="loveEditBtn" onclick="toggleEdit()"><img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio</button>
+    <textarea class="love-textarea" id="loveTextarea" placeholder="Scrivi qui le tue parole per Chicca..."></textarea>
+    <button class="love-save-btn" id="loveSaveBtn" onclick="saveMessage()"><img src="https://em-content.zobj.net/source/apple/453/floppy-disk_1f4be.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Salva</button>
   </div>
 </section>
 
@@ -143,8 +146,9 @@
     <canvas id="igCanvas"></canvas>
   </div>
 </section>
-<!-- Flash bianco fullscreen -->
-<div id="igFlash"></div>
+
+<!-- Flash fullscreen -->
+<div id="igFlash" style="position:fixed;inset:0;z-index:99999;background:white;opacity:0;pointer-events:none;transition:opacity 0.4s ease;"></div>
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
 
@@ -249,7 +253,8 @@ document.querySelectorAll('.timeline-item').forEach(function(i){obs.observe(i);}
 function loadPhoto(input){if(!input.files||!input.files[0])return;var slot=input.parentElement;var reader=new FileReader();reader.onload=function(e){var ex=slot.querySelector('img.photo');if(ex)ex.remove();var img=document.createElement('img');img.className='photo';img.src=e.target.result;slot.insertBefore(img,slot.firstChild);slot.querySelector('.upload-label').style.display='none';};reader.readAsDataURL(input.files[0]);}
 
 // MESSAGGIO
-// messaggio modificabile solo dal codice HTML
+function toggleEdit(){var ta=document.getElementById('loveTextarea'),sb=document.getElementById('loveSaveBtn'),eb=document.getElementById('loveEditBtn');var show=ta.style.display!=='block';ta.style.display=show?'block':'none';sb.style.display=show?'inline-block':'none';eb.innerHTML=show?'❌ Annulla':'<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Scrivi messaggio';if(show){ta.value=document.getElementById('loveQuoteText').textContent.includes('Scrivi')?'':document.getElementById('loveQuoteText').textContent;ta.focus();}}
+function saveMessage(){var text=document.getElementById('loveTextarea').value.trim();if(!text)return;document.getElementById('loveQuoteText').textContent=text;document.getElementById('loveTextarea').style.display='none';document.getElementById('loveSaveBtn').style.display='none';document.getElementById('loveEditBtn').innerHTML='<img src="https://em-content.zobj.net/source/apple/453/pencil_270f-fe0f.png" style="width:0.9em;height:0.9em;vertical-align:middle;"> Modifica messaggio';}
 
 // SUPABASE
 var SURL='https://aspnypmrcewkdaxuduwf.supabase.co',SKEY='sb_publishable_5c4RyzrrZIzuuoDXqKyXog_nT67Yj-x';
@@ -274,195 +279,212 @@ $(document).ready(function(){
   setTimeout(function(){startHeartAnimation();},2000);
 });
 
-// ── CUORE CANVAS ──
+// ── CUORE CANVAS (fluido, no lag) ──
 (function() {
   var wrap = document.getElementById('igHeartWrap');
   var flash = document.getElementById('igFlash');
   if (!wrap) return;
 
-  var SIZE = 200;
-  var canvas = document.getElementById('igCanvas');
-  canvas.width = SIZE; canvas.height = SIZE;
-  var ctx = canvas.getContext('2d');
-
+  // Carica immagine cuore
   var heartImg = new Image();
-  heartImg.crossOrigin = 'anonymous';
   heartImg.src = 'https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png';
 
+  var SIZE = Math.min(window.innerWidth, window.innerHeight, 280);
+  SIZE = Math.max(SIZE, 200);
+  var canvas = document.getElementById('igCanvas');
+  canvas.width = SIZE;
+  canvas.height = SIZE;
+  canvas.style.width = SIZE + 'px';
+  canvas.style.height = SIZE + 'px';
+  canvas.style.cursor = 'pointer';
+  canvas.style.touchAction = 'none';
+  canvas.style.userSelect = 'none';
+  canvas.style.outline = 'none';
+  canvas.style.webkitTapHighlightColor = 'transparent';
+  canvas.setAttribute('tabindex', '-1');
+  var ctx = canvas.getContext('2d');
+
   var pressing = false;
-  var locked = false; // bloccato durante beatloop
-  var scale = 1;
-  var MAX = 14;
-  var GROW = 0.15;
+  var scale = 1;       // 1 = normale, cresce fino a MAX
+  var MAX = 18;
+  var GROW = 0.18;
   var raf = null;
+  var exploded = false;
   var particles = [];
 
-  // ── DRAW ──
-  function draw(sc) {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    var cx = SIZE/2, cy = SIZE/2;
-    var s = sc || scale;
-    var imgS = 90 + (s - 1) * 8;
-    imgS = Math.min(imgS, SIZE * 0.95);
+  // Dimensione base cuore
+  var BASE = SIZE * 0.78;
 
-    // Bagliore radiale
-    if (s > 1.5) {
-      var alpha = Math.min((s - 1.5) / (MAX - 1.5), 1) * 0.55;
-      var grad = ctx.createRadialGradient(cx, cy, imgS*0.1, cx, cy, imgS*0.9);
-      grad.addColorStop(0, 'rgba(232,100,130,' + alpha + ')');
-      grad.addColorStop(0.5, 'rgba(232,160,168,' + (alpha*0.5) + ')');
-      grad.addColorStop(1, 'rgba(232,160,168,0)');
-      ctx.fillStyle = grad;
+  // Disegna frame
+  function draw() {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    var cx = SIZE / 2, cy = SIZE / 2;
+
+    // Bagliore radiale che cresce con la pressione
+    if (scale > 1) {
+      var glowAlpha = Math.min((scale - 1) / (MAX - 1) * 0.7, 0.7);
+      var glowRadius = BASE * 0.5 * Math.min(scale / 4, 1.5);
+      var glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowRadius + BASE * 0.3);
+      glow.addColorStop(0, 'rgba(232,80,120,' + glowAlpha + ')');
+      glow.addColorStop(0.5, 'rgba(232,160,168,' + (glowAlpha * 0.5) + ')');
+      glow.addColorStop(1, 'rgba(232,160,168,0)');
+      ctx.fillStyle = glow;
       ctx.fillRect(0, 0, SIZE, SIZE);
     }
 
-    // Cuore
+    // Cuore — grande e visibile
     if (heartImg.complete && heartImg.naturalWidth > 0) {
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.drawImage(heartImg, -imgS/2, -imgS/2, imgS, imgS);
+      var s = BASE * Math.min(scale, 1.0);
+      if (scale > 1) s = BASE * (1 + (scale - 1) * 0.12);
+      s = Math.min(s, SIZE * 0.95);
+      ctx.drawImage(heartImg, -s/2, -s/2, s, s);
       ctx.restore();
     }
 
     // Particelle
     for (var i = particles.length - 1; i >= 0; i--) {
       var p = particles[i];
-      p.x += Math.cos(p.a) * p.spd;
-      p.y += Math.sin(p.a) * p.spd;
-      p.spd *= 0.96;
+      p.x += Math.cos(p.angle) * p.speed;
+      p.y += Math.sin(p.angle) * p.speed;
       p.life -= 0.022;
+      p.speed *= 0.97;
       if (p.life <= 0) { particles.splice(i, 1); continue; }
       ctx.save();
       ctx.globalAlpha = p.life;
-      ctx.font = p.sz + 'px serif';
+      ctx.font = p.size + 'px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(p.e, p.x, p.y);
+      ctx.fillText(p.emoji, p.x, p.y);
       ctx.restore();
     }
   }
 
+  function loop() {
+    if (pressing && !exploded) {
+      scale = Math.min(scale + GROW, MAX);
+      // Spawn particelle continue
+      if (Math.random() < 0.25) spawnParticle();
+      // Esplosione al massimo
+      if (scale >= MAX) {
+        exploded = true;
+        triggerExplosion();
+        return;
+      }
+    }
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function spawnParticle() {
+    var emojis = ['💕','✨','🌸','💖','⭐','💗','🌹'];
+    var angle = Math.random() * Math.PI * 2;
+    particles.push({
+      x: SIZE/2, y: SIZE/2,
+      angle: angle,
+      speed: 2 + Math.random() * 3,
+      life: 0.8 + Math.random() * 0.4,
+      emoji: emojis[Math.floor(Math.random() * emojis.length)],
+      size: 14 + Math.random() * 10
+    });
+  }
+
   function spawnBurst(n) {
-    var em = ['💕','✨','🌸','💖','⭐','💗','🌹','💫'];
+    var emojis = ['💕','✨','🌸','💖','⭐','💗','🌹','💫','🌺'];
     for (var i = 0; i < n; i++) {
+      var angle = (i / n) * Math.PI * 2;
       particles.push({
         x: SIZE/2, y: SIZE/2,
-        a: (i/n)*Math.PI*2 + (Math.random()-0.5)*0.4,
-        spd: 3 + Math.random()*4,
-        life: 0.9 + Math.random()*0.3,
-        e: em[i % em.length],
-        sz: 14 + Math.random()*10
+        angle: angle + (Math.random()-0.5)*0.5,
+        speed: 4 + Math.random() * 5,
+        life: 1,
+        emoji: emojis[i % emojis.length],
+        size: 16 + Math.random() * 12
       });
     }
   }
 
-  // ── GROW LOOP ──
-  function growLoop() {
-    if (!pressing || locked) return;
-    scale = Math.min(scale + GROW, MAX);
-    if (Math.random() < 0.2) spawnBurst(1);
-    draw();
-    if (scale >= MAX) { triggerExplosion(); return; }
-    raf = requestAnimationFrame(growLoop);
-  }
-
-  // ── ESPLOSIONE + BEATLOOP ──
   function triggerExplosion() {
     cancelAnimationFrame(raf);
-    pressing = false;
-    locked = true;
-    spawnBurst(24);
+    spawnBurst(20);
+    // Disegna l'ultima frame con particelle
     draw();
 
-    // Flash bianco
-    flash.style.transition = 'opacity 0.12s ease';
+    // Flash bianco che esplode
+    flash.style.transition = 'opacity 0.15s ease';
     flash.style.opacity = '1';
+    flash.style.pointerEvents = 'none';
 
     setTimeout(function() {
-      // Reset sotto il flash
+      // Reset silenzioso sotto il flash
       scale = 1;
       particles = [];
+      pressing = false;
+      exploded = false;
+      draw();
 
-      // Flash sfuma
-      flash.style.transition = 'opacity 0.45s ease';
+      // Flash sparisce
+      flash.style.transition = 'opacity 0.5s ease';
       flash.style.opacity = '0';
 
-      // Avvia beat automatico per 5 secondi
-      startBeatLoop(5000);
-    }, 180);
+      // Bounce del cuore dopo il flash
+      setTimeout(function() {
+        var bounceScale = 1;
+        var bounceDir = 0.08;
+        var bounces = 0;
+        function bounceLoop() {
+          bounceScale += bounceDir;
+          if (bounceScale >= 1.25) bounceDir = -0.06;
+          if (bounceScale <= 1.0 && bounceDir < 0) {
+            bounceScale = 1; bounceDir = 0; bounces++;
+            if (bounces >= 1) { draw(); return; }
+          }
+          ctx.clearRect(0,0,SIZE,SIZE);
+          if (heartImg.complete) {
+            ctx.save();
+            ctx.translate(SIZE/2, SIZE/2);
+            var s = BASE * bounceScale;
+            ctx.drawImage(heartImg, -s/2, -s/2, s, s);
+            ctx.restore();
+          }
+          requestAnimationFrame(bounceLoop);
+        }
+        requestAnimationFrame(bounceLoop);
+      }, 300);
+    }, 200);
   }
 
-  // ── BEAT LOOP: il cuore batte da solo ──
-  function startBeatLoop(duration) {
-    var beatEmojis = ['💕','✨','🌸','💖','💗'];
-    var t0 = performance.now();
-    var beatScale = 1;
-    var beatDir = 1;
-    var beatSpeed = 0.04;
-    var beatMax = 1.22;
-    var beatCount = 0;
-
-    function beatFrame(now) {
-      var elapsed = now - t0;
-      // Battito sinusoidale
-      beatScale = 1 + 0.22 * Math.abs(Math.sin(elapsed * 0.003 * Math.PI));
-      // Particelle a ogni picco
-      if (beatScale > 1.18 && Math.random() < 0.3) {
-        particles.push({
-          x: SIZE/2, y: SIZE/2,
-          a: Math.random()*Math.PI*2,
-          spd: 2 + Math.random()*3,
-          life: 0.8,
-          e: beatEmojis[Math.floor(Math.random()*beatEmojis.length)],
-          sz: 12 + Math.random()*8
-        });
-      }
-      draw(beatScale);
-      if (elapsed < duration) {
-        raf = requestAnimationFrame(beatFrame);
-      } else {
-        // Fine beat — bounce finale e sblocca
-        particles = [];
-        draw(1);
-        locked = false;
-      }
-    }
-    raf = requestAnimationFrame(beatFrame);
-  }
-
-  // ── SHRINK se lasci prima del max ──
-  function shrink() {
+  function startPress(e) {
+    e.preventDefault();
+    if (exploded) return;
+    pressing = true;
     cancelAnimationFrame(raf);
+    spawnBurst(10);
+    raf = requestAnimationFrame(loop);
+  }
+
+  function stopPress() {
+    if (!pressing || exploded) return;
     pressing = false;
-    function sh() {
-      scale = Math.max(scale - 0.3, 1);
+    // Se non ha esploso, rimpicciolisce
+    function shrink() {
+      scale = Math.max(scale - 0.35, 1);
+      spawnParticle();
       draw();
-      if (scale > 1) requestAnimationFrame(sh);
+      if (scale > 1) requestAnimationFrame(shrink);
       else { scale = 1; particles = []; draw(); }
     }
-    requestAnimationFrame(sh);
+    cancelAnimationFrame(raf);
+    requestAnimationFrame(shrink);
   }
 
-  // ── EVENTI ──
-  canvas.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-    if (locked) return;
-    pressing = true;
-    cancelAnimationFrame(raf);
-    spawnBurst(8);
-    raf = requestAnimationFrame(growLoop);
-  });
-  canvas.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    if (locked) return;
-    pressing = true;
-    cancelAnimationFrame(raf);
-    spawnBurst(8);
-    raf = requestAnimationFrame(growLoop);
-  }, {passive:false});
-  document.addEventListener('mouseup', function() { if (pressing) shrink(); });
-  document.addEventListener('touchend', function() { if (pressing) shrink(); });
+  canvas.addEventListener('mousedown', startPress);
+  canvas.addEventListener('touchstart', startPress, {passive:false});
+  document.addEventListener('mouseup', stopPress);
+  document.addEventListener('touchend', stopPress);
 
+  // Disegna stato iniziale
   heartImg.onload = function() { draw(); };
   if (heartImg.complete) draw();
 })();
