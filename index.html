@@ -289,8 +289,7 @@ $(document).ready(function(){
   var heartImg = new Image();
   heartImg.src = 'https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png';
 
-  var SIZE = Math.min(window.innerWidth, window.innerHeight, 280);
-  SIZE = Math.max(SIZE, 200);
+  var SIZE = Math.min(wrap.offsetWidth || 200, 200);
   var canvas = document.getElementById('igCanvas');
   canvas.width = SIZE;
   canvas.height = SIZE;
@@ -299,9 +298,6 @@ $(document).ready(function(){
   canvas.style.cursor = 'pointer';
   canvas.style.touchAction = 'none';
   canvas.style.userSelect = 'none';
-  canvas.style.outline = 'none';
-  canvas.style.webkitTapHighlightColor = 'transparent';
-  canvas.setAttribute('tabindex', '-1');
   var ctx = canvas.getContext('2d');
 
   var pressing = false;
@@ -312,33 +308,29 @@ $(document).ready(function(){
   var exploded = false;
   var particles = [];
 
-  // Dimensione base cuore
-  var BASE = SIZE * 0.78;
-
   // Disegna frame
   function draw() {
     ctx.clearRect(0, 0, SIZE, SIZE);
     var cx = SIZE / 2, cy = SIZE / 2;
+    var imgSize = 100 * Math.min(scale, 1) + (scale > 1 ? 100 + (scale-1)*22 : 100);
+    imgSize = Math.min(imgSize, SIZE * scale);
 
-    // Bagliore radiale che cresce con la pressione
+    // Bagliore che cresce
     if (scale > 1) {
-      var glowAlpha = Math.min((scale - 1) / (MAX - 1) * 0.7, 0.7);
-      var glowRadius = BASE * 0.5 * Math.min(scale / 4, 1.5);
-      var glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowRadius + BASE * 0.3);
-      glow.addColorStop(0, 'rgba(232,80,120,' + glowAlpha + ')');
-      glow.addColorStop(0.5, 'rgba(232,160,168,' + (glowAlpha * 0.5) + ')');
+      var glowR = imgSize * 0.6 * Math.min((scale-1)/4, 1);
+      var glow = ctx.createRadialGradient(cx, cy, imgSize*0.1, cx, cy, imgSize*0.7);
+      glow.addColorStop(0, 'rgba(232,160,168,' + Math.min((scale-1)*0.08, 0.6) + ')');
       glow.addColorStop(1, 'rgba(232,160,168,0)');
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, SIZE, SIZE);
     }
 
-    // Cuore — grande e visibile
-    if (heartImg.complete && heartImg.naturalWidth > 0) {
+    // Cuore
+    if (heartImg.complete) {
       ctx.save();
       ctx.translate(cx, cy);
-      var s = BASE * Math.min(scale, 1.0);
-      if (scale > 1) s = BASE * (1 + (scale - 1) * 0.12);
-      s = Math.min(s, SIZE * 0.95);
+      var s = (80 + (scale - 1) * 20);
+      s = Math.min(s, SIZE * 0.92);
       ctx.drawImage(heartImg, -s/2, -s/2, s, s);
       ctx.restore();
     }
@@ -348,7 +340,7 @@ $(document).ready(function(){
       var p = particles[i];
       p.x += Math.cos(p.angle) * p.speed;
       p.y += Math.sin(p.angle) * p.speed;
-      p.life -= 0.022;
+      p.life -= 0.025;
       p.speed *= 0.97;
       if (p.life <= 0) { particles.splice(i, 1); continue; }
       ctx.save();
@@ -444,7 +436,7 @@ $(document).ready(function(){
           if (heartImg.complete) {
             ctx.save();
             ctx.translate(SIZE/2, SIZE/2);
-            var s = BASE * bounceScale;
+            var s = 80 * bounceScale;
             ctx.drawImage(heartImg, -s/2, -s/2, s, s);
             ctx.restore();
           }

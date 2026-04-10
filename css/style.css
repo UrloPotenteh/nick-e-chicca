@@ -305,8 +305,8 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: min(280px, 80vw);
-  height: min(280px, 80vw);
+  width: 200px;
+  height: 200px;
   z-index: 10;
 }
 
@@ -316,11 +316,6 @@ body { background:var(--blush); font-family:'Cormorant Garamond',serif; overflow
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
   position: relative;
   z-index: 10;
-  outline: none !important;
-  border: none !important;
-  background: transparent;
 }
-#igCanvas:focus { outline: none !important; }
