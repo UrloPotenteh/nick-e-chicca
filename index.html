@@ -153,6 +153,7 @@
 <!-- Overlay cuore fullscreen -->
 <div id="igOverlay">
   <img src="https://em-content.zobj.net/source/apple/453/heart-with-arrow_1f498.png" alt="💘" id="igOverlayImg">
+  <div id="igFlash"></div>
 </div>
 
 <div class="divider"><img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"> ✿ <img src="https://em-content.zobj.net/source/apple/453/herb_1f33f.png" style="width:1em;height:1em;vertical-align:middle;"></div>
@@ -289,11 +290,13 @@ $(document).ready(function(){
   var wrap = document.getElementById('igHeartWrap');
   var heart = document.getElementById('igHeart');
   var overlay = document.getElementById('igOverlay');
+  var overlayImg = document.getElementById('igOverlayImg');
+  var flash = document.getElementById('igFlash');
   var burst = document.getElementById('igBurst');
   if (!wrap) return;
 
   var pressing = false;
-  var growTimer = null;
+  var exploding = false;
   var scale = 1;
   var MAX = 28; // scala massima (fullscreen)
   var GROW_SPEED = 0.12;
@@ -301,7 +304,7 @@ $(document).ready(function(){
   var raf = null;
 
   function growHeart() {
-    if (!pressing) return;
+    if (!pressing || exploding) return;
     scale = Math.min(scale + GROW_SPEED, MAX);
     heart.style.transform = 'scale(' + scale + ')';
     // quando diventa molto grande mostra overlay
@@ -310,10 +313,48 @@ $(document).ready(function(){
       overlay.style.opacity = Math.min(prog * 1.2, 1);
       overlay.style.display = 'flex';
     }
+    if (scale >= MAX) {
+      triggerFullscreenExplosion();
+      return;
+    }
     raf = requestAnimationFrame(growHeart);
   }
 
+  function hideOverlaySoon() {
+    overlay.style.opacity = 0;
+    setTimeout(function() {
+      overlay.style.display = 'none';
+    }, 220);
+  }
+
+  function resetHeartState() {
+    scale = 1;
+    heart.style.transform = 'scale(1)';
+    overlay.style.opacity = 0;
+    flash.classList.remove('active');
+    overlayImg.classList.remove('exploding');
+    setTimeout(function() {
+      overlay.style.display = 'none';
+    }, 220);
+  }
+
+  function triggerFullscreenExplosion() {
+    exploding = true;
+    pressing = false;
+    cancelAnimationFrame(raf);
+    overlay.style.display = 'flex';
+    overlay.style.opacity = 1;
+    overlayImg.classList.add('exploding');
+    flash.classList.add('active');
+    spawnBurst(true);
+    setTimeout(function() {
+      resetHeartState();
+      exploding = false;
+    }, 650);
+  }
+
   function shrinkHeart() {
+    if (exploding) return;
     cancelAnimationFrame(raf);
     pressing = false;
     function shrink() {
@@ -322,8 +363,7 @@ $(document).ready(function(){
       var prog = Math.max((scale - 8) / (MAX - 8), 0);
       overlay.style.opacity = Math.min(prog * 1.2, 1);
       if (scale <= 1) {
-        overlay.style.opacity = 0;
-        setTimeout(function(){ overlay.style.display = 'none'; }, 200);
+        hideOverlaySoon();
         heart.style.transform = 'scale(1)';
         return;
       }
@@ -333,6 +373,7 @@ $(document).ready(function(){
   }
 
   function startPress(e) {
+    if (exploding) return;
     e.preventDefault();
     pressing = true;
     // piccolo bounce iniziale
@@ -343,17 +384,22 @@ $(document).ready(function(){
     raf = requestAnimationFrame(growHeart);
   }
 
-  function spawnBurst() {
+  function spawnBurst(isBig) {
     burst.innerHTML = '';
-    var emojis = ['💕','✨','🌸','💖','⭐','💗'];
-    for (var i = 0; i < 8; i++) {
+    var emojis = ['💕','✨','🌸','💖','⭐','💗','💫','🌟'];
+    var total = isBig ? 14 : 8;
+    for (var i = 0; i < total; i++) {
       var el = document.createElement('div');
       el.className = 'ig-particle';
       el.textContent = emojis[i % emojis.length];
-      var angle = (i / 8) * 360;
+      var angle = (i / total) * 360;
       el.style.setProperty('--angle', angle + 'deg');
+      if (isBig) {
+        el.style.setProperty('--distance', (70 + Math.random() * 70) + 'px');
+        el.style.animationDuration = '0.9s';
+      }
       burst.appendChild(el);
-      setTimeout(function(el){ el.remove(); }, 700, el);
+      setTimeout(function(el){ el.remove(); }, isBig ? 1000 : 700, el);
     }
   }
 
