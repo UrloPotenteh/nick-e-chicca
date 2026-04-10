@@ -442,6 +442,28 @@ body {
   100% { transform: scale(1); }
 }
 
+
+/* Particelle burst */
+.ig-burst {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+.ig-particle {
+  position: absolute;
+  font-size: 1.2rem;
+  top: 0; left: 0;
+  animation: igParticle 0.65s ease forwards;
+  transform-origin: center;
+}
+@keyframes igParticle {
+  0% { transform: rotate(var(--angle)) translateY(0) scale(0); opacity: 1; }
+  60% { opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateY(-60px) scale(1.2); opacity: 0; }
+}
+
 /* ── TIMELINE PALLINI più visibili ── */
 .timeline-dot {
   position: absolute;
