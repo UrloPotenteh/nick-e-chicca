@@ -309,176 +309,230 @@ $(document).ready(function(){
 setTimeout(function(){startHeartAnimation();},2000);
 });
 
-// ── CUORE INSTAGRAM ──
-(function() {
-var wrap        = document.getElementById('igHeartWrap');
-var heart       = document.getElementById('igHeart');
-var overlay     = document.getElementById('igOverlay');
-var overlayImg  = document.getElementById('igOverlayImg');
-var flash       = document.getElementById('igFlash');
-var burst       = document.getElementById('igBurst');
-if (!wrap) return;
+// ══════════════════════════════════════════════════════════
+// CUORE — animazione press & hold
+// ══════════════════════════════════════════════════════════
+(function () {
+  'use strict';
 
-var pressing  = false;
-var phase     = 'idle'; // idle | growing | shrinking | exploding | beating
-var scale     = 1;
-var MAX       = 18;
-var GROW_SPEED   = 0.09;
-var SHRINK_SPEED = 0.22;
-var raf       = null;
-var beatTimer = null;
+  // ── Elementi DOM ─────────────────────────────────────────
+  var wrap       = document.getElementById('igHeartWrap');
+  var heart      = document.getElementById('igHeart');
+  var overlay    = document.getElementById('igOverlay');
+  var overlayImg = document.getElementById('igOverlayImg');
+  var flash      = document.getElementById('igFlash');
+  var burst      = document.getElementById('igBurst');
+  if (!wrap) return;
 
-/* ── mostra overlay ── */
-function showOverlay(opacity) {
-overlay.style.display = 'flex';
-overlay.style.opacity = opacity;
-overlay.style.background = opacity > 0.5
-? 'rgba(253,240,242,0.9)'
-: 'rgba(253,240,242,0)';
-}
-function hideOverlay() {
-overlay.style.opacity = '0';
-overlay.style.background = 'rgba(253,240,242,0)';
-setTimeout(function(){ overlay.style.display = 'none'; }, 200);
-}
+  // ── Costanti ─────────────────────────────────────────────
+  var MAX_SCALE    = 16;   // scala massima prima dell'esplosione
+  var GROW_STEP    = 0.10; // incremento per frame (~60fps → ~2s per arrivare a MAX)
+  var SHRINK_STEP  = 0.25; // decremento per frame (più veloce del grow)
+  var OVERLAY_FROM = 5;    // da che scala inizia a comparire l'overlay
+  var BEAT_COUNT   = 13;   // numero di battiti dopo l'esplosione
+  var BEAT_DUR_MS  = 750;  // durata singolo battito (deve matchare il CSS)
+  var EMOJIS       = ['💕','✨','🌸','💖','⭐','💗','💫','🌟'];
 
-/* ── grow loop ── */
-function growHeart() {
-if (!pressing || phase !== 'growing') return;
-scale = Math.min(scale + GROW_SPEED, MAX);
-heart.style.transform = 'scale(' + scale + ') translateZ(0)';
-if (scale > 6) {
-var prog = Math.min((scale - 6) / (MAX - 6) * 1.2, 1);
-showOverlay(prog);
-}
-if (scale >= MAX) { triggerExplosion(); return; }
-raf = requestAnimationFrame(growHeart);
-}
+  // ── Stato ────────────────────────────────────────────────
+  // phase: 'idle' | 'growing' | 'shrinking' | 'exploding' | 'beating'
+  var phase     = 'idle';
+  var scale     = 1;
+  var raf       = null;
+  var beatTimer = null;
 
-/* ── shrink loop ── */
-function shrinkHeart() {
-if (phase === 'exploding' || phase === 'beating') return;
-cancelAnimationFrame(raf);
-pressing = false;
-phase = 'shrinking';
-function shrink() {
-scale = Math.max(scale - SHRINK_SPEED, 1);
-heart.style.transform = 'scale(' + scale + ') translateZ(0)';
-var prog = Math.max((scale - 6) / (MAX - 6), 0);
-if (scale > 6) { showOverlay(Math.min(prog * 1.2, 1)); }
-else { hideOverlay(); }
-if (scale <= 1) {
-heart.style.transform = 'scale(1) translateZ(0)';
-heart.style.willChange = 'auto';
-hideOverlay();
-phase = 'idle';
-return;
-}
-requestAnimationFrame(shrink);
-}
-requestAnimationFrame(shrink);
-}
-
-/* ── ESPLOSIONE + FLASH + BATTITO ── */
-function triggerExplosion() {
-phase = 'exploding';
-pressing = false;
-cancelAnimationFrame(raf);
-
-// mostra overlay pieno
-showOverlay(1);
-overlayImg.classList.remove('is-beating');
-
-// spawn burst grande
-spawnBurst(true);
-
-// 1. piccola vibrazione del cuore
-overlayImg.style.transition = 'transform 0.1s';
-overlayImg.style.transform = 'scale(1.25)';
-
-setTimeout(function() {
-// 2. flash bianco (usando setTimeout invece del reflow forzato per evitare crash su iOS Safari)
-flash.classList.remove('active');
-setTimeout(function() { flash.classList.add('active'); }, 20);
-
-// 3. dopo che il flash si chiarisce (~600ms), mostra il battito
-setTimeout(function() {
-// nascondi il cuore scalato, resetta
-overlayImg.style.transition = 'none';
-overlayImg.style.transform = 'scale(1)';
-heart.style.transform = 'scale(1) translateZ(0)';
-scale = 1;
-
-phase = 'beating';
-showOverlay(1);
-
-// avvia battito
-overlayImg.classList.remove('is-beating');
-void overlayImg.offsetWidth;
-overlayImg.classList.add('is-beating');
-
-// 10 secondi di battito poi sparisce e torna cliccabile
-beatTimer = setTimeout(function() {
-overlayImg.classList.remove('is-beating');
-hideOverlay();
-flash.classList.remove('active');
-phase = 'idle';
-}, 10000);
-
-}, 620);
-
-}, 100);
-}
-
-/* ── start press ── */
-function startPress(e) {
-if (phase !== 'idle') return;
-e.preventDefault();
-pressing = true;
-phase = 'growing';
-heart.style.willChange = 'transform';
-heart.style.transition = 'transform 0.07s ease';
-setTimeout(function(){ heart.style.transition = 'none'; }, 70);
-spawnBurst(false);
-raf = requestAnimationFrame(growHeart);
-}
-
-  /* ── particelle burst ── */
-  function spawnBurst(isBig) {
-    burst.innerHTML = '';
-    var emojis = ['💕','✨','🌸','💖','⭐','💗','💫','🌟'];
-    var total = isBig ? 16 : 8;
-    for (var i = 0; i < total; i++) {
-      var el = document.createElement('div');
-      el.className = 'ig-particle';
-      el.textContent = emojis[i % emojis.length];
-      var angle = (i / total) * 360;
-      el.style.setProperty('--angle', angle + 'deg');
-      if (isBig) {
-        el.style.setProperty('--distance', (80 + Math.random() * 80) + 'px');
-        el.style.animationDuration = '0.95s';
-      }
-      burst.appendChild(el);
-      setTimeout(function(el){ el.remove(); }, isBig ? 1050 : 720, el);
+  // ── Helpers overlay ──────────────────────────────────────
+  function setOverlay(opacity) {
+    if (opacity <= 0) {
+      // nascondi con fade
+      overlay.style.opacity = '0';
+      overlay.style.background = 'rgba(253,240,242,0)';
+      overlay.classList.remove('is-active');
+      setTimeout(function () { overlay.style.display = 'none'; }, 220);
+    } else {
+      overlay.style.display = 'flex';
+      // forza un frame prima di applicare opacity così la transition parte
+      requestAnimationFrame(function () {
+        overlay.style.opacity = String(Math.min(opacity, 1));
+        overlay.style.background = opacity >= 0.9
+          ? 'rgba(253,240,242,0.92)'
+          : 'rgba(253,240,242,0)';
+      });
     }
   }
-  
 
-wrap.addEventListener('mousedown',  startPress);
-wrap.addEventListener('touchstart', startPress, {passive: false});
-document.addEventListener('mouseup',   function(){ if (pressing) shrinkHeart(); });
-document.addEventListener('touchend',  function(){ if (pressing) shrinkHeart(); });
-// clic sull'overlay durante il battito = chiudi subito
-overlay.addEventListener('click', function() {
-if (phase === 'beating') {
-clearTimeout(beatTimer);
-overlayImg.classList.remove('is-beating');
-hideOverlay();
-flash.classList.remove('active');
-phase = 'idle';
-}
-});
-})();
+  function activateOverlay() {
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '1';
+    overlay.style.background = 'rgba(253,240,242,0.92)';
+    overlay.classList.add('is-active');
+  }
+
+  // ── Aggiorna transform del cuore ─────────────────────────
+  function setHeartScale(s) {
+    // translateZ(0) mantiene l'elemento sul proprio layer compositing
+    // ed evita che iOS Safari lo ri-rasterizzi ad ogni frame
+    heart.style.transform = 'translateZ(0) scale(' + s + ')';
+  }
+
+  // ── Crescita ─────────────────────────────────────────────
+  function growLoop() {
+    if (phase !== 'growing') return;
+    scale = Math.min(scale + GROW_STEP, MAX_SCALE);
+    setHeartScale(scale);
+
+    // overlay proporzionale alla crescita
+    if (scale > OVERLAY_FROM) {
+      var prog = (scale - OVERLAY_FROM) / (MAX_SCALE - OVERLAY_FROM);
+      setOverlay(prog);
+    }
+
+    if (scale >= MAX_SCALE) {
+      explode();
+    } else {
+      raf = requestAnimationFrame(growLoop);
+    }
+  }
+
+  // ── Rimpicciolimento ─────────────────────────────────────
+  function shrinkLoop() {
+    if (phase !== 'shrinking') return;
+    scale = Math.max(scale - SHRINK_STEP, 1);
+    setHeartScale(scale);
+
+    if (scale > OVERLAY_FROM) {
+      var prog = (scale - OVERLAY_FROM) / (MAX_SCALE - OVERLAY_FROM);
+      setOverlay(prog);
+    } else {
+      setOverlay(0);
+    }
+
+    if (scale <= 1) {
+      setHeartScale(1);
+      heart.style.willChange = 'auto';
+      setOverlay(0);
+      phase = 'idle';
+    } else {
+      raf = requestAnimationFrame(shrinkLoop);
+    }
+  }
+
+  // ── Esplosione ───────────────────────────────────────────
+  function explode() {
+    phase = 'exploding';
+    cancelAnimationFrame(raf);
+
+    activateOverlay();
+    spawnBurst(true);
+
+    // 1) Piccola vibrazione del cuore nell'overlay
+    overlayImg.style.transition = 'transform 0.12s ease-out';
+    overlayImg.style.transform  = 'scale(1.22)';
+
+    // 2) Flash bianco dopo 120ms
+    setTimeout(function () {
+      flash.classList.remove('active');
+      // piccolo delay garantisce che il browser veda la rimozione
+      // della classe prima di aggiungerla di nuovo (re-trigger animazione)
+      setTimeout(function () {
+        flash.classList.add('active');
+      }, 16);
+    }, 120);
+
+    // 3) Dopo che il flash si apre (~650ms totali), lancia il battito
+    setTimeout(function () {
+      // Resetta il cuore principale fuori schermo
+      setHeartScale(1);
+      heart.style.willChange = 'auto';
+      scale = 1;
+
+      // Resetta overlayImg e lancia il battito
+      overlayImg.style.transition = 'none';
+      overlayImg.style.transform  = 'scale(1)';
+      phase = 'beating';
+
+      // toglie e rimette la classe dopo un frame per ri-triggerare l'animazione CSS
+      overlayImg.classList.remove('is-beating');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          overlayImg.classList.add('is-beating');
+        });
+      });
+
+      // Chiude automaticamente dopo tutti i battiti
+      beatTimer = setTimeout(closeBeat, BEAT_COUNT * BEAT_DUR_MS);
+
+    }, 650);
+  }
+
+  // ── Fine battito ─────────────────────────────────────────
+  function closeBeat() {
+    clearTimeout(beatTimer);
+    overlayImg.classList.remove('is-beating');
+    overlayImg.style.transform = '';
+    flash.classList.remove('active');
+    setOverlay(0);
+    phase = 'idle';
+  }
+
+  // ── Particelle burst ─────────────────────────────────────
+  function spawnBurst(isBig) {
+    burst.innerHTML = '';
+    var total   = isBig ? 16 : 8;
+    var lifeMs  = isBig ? 1000 : 680;
+
+    for (var i = 0; i < total; i++) {
+      var el    = document.createElement('div');
+      el.className   = 'ig-particle';
+      el.textContent = EMOJIS[i % EMOJIS.length];
+
+      var angle = (i / total) * 360;
+      var dist  = isBig
+        ? (70 + Math.random() * 90) + 'px'
+        : (40 + Math.random() * 30) + 'px';
+
+      el.style.setProperty('--angle',    angle + 'deg');
+      el.style.setProperty('--distance', dist);
+      el.style.setProperty('--dur',      (lifeMs / 1000) + 's');
+
+      burst.appendChild(el);
+      setTimeout(function (node) { node.remove(); }, lifeMs + 50, el);
+    }
+  }
+
+  // ── Gestione press ───────────────────────────────────────
+  function onPressStart(e) {
+    if (phase !== 'idle') return;
+    e.preventDefault();
+    phase = 'growing';
+    heart.style.willChange = 'transform';
+    spawnBurst(false);
+    raf = requestAnimationFrame(growLoop);
+  }
+
+  function onPressEnd() {
+    if (phase !== 'growing' && phase !== 'shrinking') return;
+    if (phase === 'growing') {
+      cancelAnimationFrame(raf);
+      phase = 'shrinking';
+      raf = requestAnimationFrame(shrinkLoop);
+    }
+  }
+
+  // ── Event listeners ──────────────────────────────────────
+  wrap.addEventListener('mousedown',  onPressStart);
+  wrap.addEventListener('touchstart', onPressStart, { passive: false });
+
+  document.addEventListener('mouseup',  onPressEnd);
+  document.addEventListener('touchend', onPressEnd);
+  // sicurezza: se il dito esce dallo schermo
+  document.addEventListener('touchcancel', onPressEnd);
+
+  // Tocco sull'overlay durante il battito → chiude subito
+  overlay.addEventListener('click', function () {
+    if (phase === 'beating') closeBeat();
+  });
+
+}());
 
 // ── POPUP FOTO TIMELINE ──
 (function() {

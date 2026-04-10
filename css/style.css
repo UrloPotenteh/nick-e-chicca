@@ -344,8 +344,12 @@ body {
 
 
 /* ── CUORE INSTAGRAM ── */
+/* ════════════════════════════════════════════
+   CUORE — sezione contenitore
+   ════════════════════════════════════════════ */
 .ig-heart-section { padding-bottom: 20px; }
 
+/* Zona touch/click: dimensione fissa, nessun select */
 .ig-heart-wrap {
   position: relative;
   display: inline-flex;
@@ -356,17 +360,18 @@ body {
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none;
+  touch-action: none; /* blocca scroll iOS durante il press */
 }
 
+/* Il div che viene scalato via JS.
+   Niente filter qui: su iOS Safari un filter attivo
+   durante scale() molto alto causa crash di memoria GPU
+   perché il browser alloca una texture proporzionale
+   alla dimensione renderizzata finale. */
 .ig-heart {
   position: relative;
-  z-index: 2;
-  transform: scale(1) translateZ(0);
-  transform-origin: center;
-  will-change: transform;
-  /* filter rimosso: su iOS Safari causa crash di memoria GPU
-     quando l'elemento viene scalato a ~20x+ */
+  transform-origin: center center;
+  /* will-change viene aggiunto/rimosso da JS solo durante l'animazione */
 }
 
 .ig-heart img {
@@ -374,97 +379,102 @@ body {
   height: 120px;
   display: block;
   pointer-events: none;
+  /* filter applicato sull'img statica, non sul div in scaling */
+  filter: drop-shadow(0 4px 18px #e8a0a855);
 }
 
-.ig-heart-wrap:hover .ig-heart {
-  /* nessun filter durante la crescita */
-}
-
-
-/* ── CUORE overlay fullscreen ── */
+/* ════════════════════════════════════════════
+   OVERLAY FULLSCREEN
+   Sfondo rosa che appare mentre il cuore cresce.
+   Controllato tramite CSS custom property --ov-bg
+   per evitare reflow da style inline continui.
+   ════════════════════════════════════════════ */
 #igOverlay {
-  display: none;
+  display: none;               /* JS lo porta a flex quando serve */
   position: fixed;
   inset: 0;
-  z-index: 2147483646;
-  background: rgba(253,240,242,0.0);
+  z-index: 9000;
   align-items: center;
   justify-content: center;
+  pointer-events: none;        /* non blocca il touch durante la crescita */
+  background: rgba(253, 240, 242, 0);
+  opacity: 0;
+  transition: opacity 0.18s ease, background 0.25s ease;
+}
+/* Quando è attivo riceve pointer-events per poter chiudere */
+#igOverlay.is-active {
   pointer-events: all;
-  transition: opacity 0.15s ease, background 0.25s ease;
 }
 
-/* Flash bianco sopra tutto */
+/* Cuore grande al centro dell'overlay */
+#igOverlayImg {
+  width: min(68vw, 68vh);
+  height: min(68vw, 68vh);
+  object-fit: contain;
+  filter: drop-shadow(0 0 48px #e8a0a877);
+  pointer-events: none;
+  /* nessun will-change di default: viene aggiunto solo durante il battito */
+}
+
+/* Battito — keyframe lineare per evitare overload su Safari */
+#igOverlayImg.is-beating {
+  will-change: transform;
+  animation: heartBeat 0.75s ease-in-out 13;
+}
+@keyframes heartBeat {
+  0%   { transform: scale(1);    }
+  25%  { transform: scale(1.16); }
+  50%  { transform: scale(1.07); }
+  75%  { transform: scale(1.20); }
+  100% { transform: scale(1);    }
+}
+
+/* ════════════════════════════════════════════
+   FLASH BIANCO
+   Layer separato sopra tutto, z-index massimo.
+   ════════════════════════════════════════════ */
 #igFlash {
   position: fixed;
   inset: 0;
-  z-index: 2147483647;
+  z-index: 9999;
   background: #fff;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.05s;
+  /* nessuna transition di default: l'animazione è tutta via keyframe */
 }
 #igFlash.active {
-  animation: igWhiteFlash 1.0s ease-out forwards;
+  animation: whiteFlash 0.9s ease-out forwards;
 }
-@keyframes igWhiteFlash {
+@keyframes whiteFlash {
   0%   { opacity: 0; }
-  8%   { opacity: 1; }
-  65%  { opacity: 1; }
-  100% { opacity: 0; }
-}
+  10%  { opacity: 1; }
   60%  { opacity: 1; }
   100% { opacity: 0; }
 }
 
-#igOverlay[style*="opacity: 1"],
-#igOverlay[style*="opacity:1"] {
-  background: rgba(253,240,242,0.9);
-}
-
-/* Cuore nell'overlay SEMPRE sopra le scritte */
-#igOverlayImg {
-  position: relative;
-  z-index: 2147483646;
-  width: min(70vw, 70vh);
-  height: min(70vw, 70vh);
-  object-fit: contain;
-  filter: drop-shadow(0 0 60px #e8a0a888);
-  pointer-events: none;
-  transform: scale(1) translateZ(0);
-  /* will-change rimosso: non serve qui e aumenta memoria GPU su iOS */
-}
-#igOverlayImg.is-beating {
-  animation: igPulseOverlay 0.7s cubic-bezier(0.25,0.46,0.45,0.94) 15;
-}
-@keyframes igPulseOverlay {
-  0%   { transform: scale(1); }
-  30%  { transform: scale(1.18); }
-  50%  { transform: scale(1.08); }
-  70%  { transform: scale(1.22); }
-  100% { transform: scale(1); }
-}
-
-
-/* Particelle burst */
+/* ════════════════════════════════════════════
+   PARTICELLE BURST
+   ════════════════════════════════════════════ */
 .ig-burst {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 3;
 }
 .ig-particle {
   position: absolute;
   font-size: 1.2rem;
-  top: 0; left: 0;
-  animation: igParticle 0.65s ease forwards;
+  top: 0;
+  left: 0;
   transform-origin: center;
+  animation: particleFly var(--dur, 0.65s) ease forwards;
 }
-@keyframes igParticle {
-  0% { transform: rotate(var(--angle)) translateY(0) scale(0); opacity: 1; }
-  60% { opacity: 1; }
-  100% { transform: rotate(var(--angle)) translateY(-60px) scale(1.2); opacity: 0; }
+@keyframes particleFly {
+  0%   { transform: rotate(var(--angle)) translateY(0)     scale(0);   opacity: 1; }
+  55%  { opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateY(var(--distance, -55px)) scale(1.1); opacity: 0; }
 }
 
 /* ── TIMELINE PALLINI più visibili ── */
