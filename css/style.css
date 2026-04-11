@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap');
 
 :root {
   --rose: #e8a0a8;
@@ -253,7 +253,7 @@ body {
 
 /* ── MESSAGGIO ── */
 .love-message-section { position:relative; z-index:2; text-align:center; padding:36px 24px; background:linear-gradient(135deg,#fff5f7,#f0f7f1); border-radius:28px; border:1.5px solid var(--rose-light); max-width:720px; margin:0 auto 60px; }
-.love-quote { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,5vw,2.8rem); color:var(--rose-deep); line-height:1.5; margin-bottom:16px; }
+.love-quote { font-family:'Lora',serif; font-style:italic; font-weight:400; font-size:clamp(1.35rem,3.5vw,1.9rem); color:var(--rose-deep); line-height:1.75; margin-bottom:16px; }
 .love-from { font-style:italic; color:var(--text-light); font-size:1rem; letter-spacing:0.08em; }
 .love-edit-btn { margin-top:20px; background:var(--rose); color:white; border:none; border-radius:50px; padding:10px 28px; font-family:'Cormorant Garamond',serif; font-size:1rem; cursor:pointer; transition:all 0.3s; letter-spacing:0.05em; display:inline-block; }
 .love-edit-btn:hover { background:var(--rose-deep); transform:scale(1.05); }
@@ -344,12 +344,8 @@ body {
 
 
 /* ── CUORE INSTAGRAM ── */
-/* ════════════════════════════════════════════
-   CUORE — sezione contenitore
-   ════════════════════════════════════════════ */
 .ig-heart-section { padding-bottom: 20px; }
 
-/* Zona touch/click: dimensione fissa, nessun select */
 .ig-heart-wrap {
   position: relative;
   display: inline-flex;
@@ -360,18 +356,17 @@ body {
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none; /* blocca scroll iOS durante il press */
+  touch-action: none;
 }
 
-/* Il div che viene scalato via JS.
-   Niente filter qui: su iOS Safari un filter attivo
-   durante scale() molto alto causa crash di memoria GPU
-   perché il browser alloca una texture proporzionale
-   alla dimensione renderizzata finale. */
 .ig-heart {
   position: relative;
-  transform-origin: center center;
-  /* will-change viene aggiunto/rimosso da JS solo durante l'animazione */
+  z-index: 2;
+  transform: scale(1);
+  transform-origin: center;
+  will-change: transform;
+  filter: drop-shadow(0 4px 20px #e8a0a866);
+  transition: filter 0.2s;
 }
 
 .ig-heart img {
@@ -379,102 +374,97 @@ body {
   height: 120px;
   display: block;
   pointer-events: none;
-  /* filter applicato sull'img statica, non sul div in scaling */
-  filter: drop-shadow(0 4px 18px #e8a0a855);
 }
 
-/* ════════════════════════════════════════════
-   OVERLAY FULLSCREEN
-   Sfondo rosa che appare mentre il cuore cresce.
-   Controllato tramite CSS custom property --ov-bg
-   per evitare reflow da style inline continui.
-   ════════════════════════════════════════════ */
+.ig-heart-wrap:hover .ig-heart {
+  filter: drop-shadow(0 4px 28px #c4687a88);
+}
+
+
+/* ── CUORE overlay fullscreen ── */
 #igOverlay {
-  display: none;               /* JS lo porta a flex quando serve */
+  display: none;
   position: fixed;
   inset: 0;
-  z-index: 9000;
+  z-index: 2147483646;
+  background: rgba(253,240,242,0.0);
   align-items: center;
   justify-content: center;
-  pointer-events: none;        /* non blocca il touch durante la crescita */
-  background: rgba(253, 240, 242, 0);
-  opacity: 0;
-  transition: opacity 0.18s ease, background 0.25s ease;
-}
-/* Quando è attivo riceve pointer-events per poter chiudere */
-#igOverlay.is-active {
   pointer-events: all;
+  transition: opacity 0.15s ease, background 0.25s ease;
 }
 
-/* Cuore grande al centro dell'overlay */
-#igOverlayImg {
-  width: min(68vw, 68vh);
-  height: min(68vw, 68vh);
-  object-fit: contain;
-  filter: drop-shadow(0 0 48px #e8a0a877);
-  pointer-events: none;
-  /* nessun will-change di default: viene aggiunto solo durante il battito */
-}
-
-/* Battito — keyframe lineare per evitare overload su Safari */
-#igOverlayImg.is-beating {
-  will-change: transform;
-  animation: heartBeat 0.75s ease-in-out 13;
-}
-@keyframes heartBeat {
-  0%   { transform: scale(1);    }
-  25%  { transform: scale(1.16); }
-  50%  { transform: scale(1.07); }
-  75%  { transform: scale(1.20); }
-  100% { transform: scale(1);    }
-}
-
-/* ════════════════════════════════════════════
-   FLASH BIANCO
-   Layer separato sopra tutto, z-index massimo.
-   ════════════════════════════════════════════ */
+/* Flash bianco sopra tutto */
 #igFlash {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 2147483647;
   background: #fff;
   opacity: 0;
   pointer-events: none;
-  /* nessuna transition di default: l'animazione è tutta via keyframe */
+  transition: opacity 0.05s;
 }
 #igFlash.active {
-  animation: whiteFlash 0.9s ease-out forwards;
+  animation: igWhiteFlash 1.0s ease-out forwards;
 }
-@keyframes whiteFlash {
+@keyframes igWhiteFlash {
   0%   { opacity: 0; }
-  10%  { opacity: 1; }
+  8%   { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
+}
   60%  { opacity: 1; }
   100% { opacity: 0; }
 }
 
-/* ════════════════════════════════════════════
-   PARTICELLE BURST
-   ════════════════════════════════════════════ */
+#igOverlay[style*="opacity: 1"],
+#igOverlay[style*="opacity:1"] {
+  background: rgba(253,240,242,0.9);
+}
+
+/* Cuore nell'overlay SEMPRE sopra le scritte */
+#igOverlayImg {
+  position: relative;
+  z-index: 2147483646;
+  width: min(70vw, 70vh);
+  height: min(70vw, 70vh);
+  object-fit: contain;
+  filter: drop-shadow(0 0 60px #e8a0a888);
+  pointer-events: none;
+  transform: scale(1);
+  will-change: transform;
+}
+#igOverlayImg.is-beating {
+  animation: igPulseOverlay 0.7s cubic-bezier(0.25,0.46,0.45,0.94) 15;
+}
+@keyframes igPulseOverlay {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.18); }
+  50%  { transform: scale(1.08); }
+  70%  { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+
+/* Particelle burst */
 .ig-burst {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
   pointer-events: none;
   z-index: 3;
 }
 .ig-particle {
   position: absolute;
   font-size: 1.2rem;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
+  animation: igParticle 0.65s ease forwards;
   transform-origin: center;
-  animation: particleFly var(--dur, 0.65s) ease forwards;
 }
-@keyframes particleFly {
-  0%   { transform: rotate(var(--angle)) translateY(0)     scale(0);   opacity: 1; }
-  55%  { opacity: 1; }
-  100% { transform: rotate(var(--angle)) translateY(var(--distance, -55px)) scale(1.1); opacity: 0; }
+@keyframes igParticle {
+  0% { transform: rotate(var(--angle)) translateY(0) scale(0); opacity: 1; }
+  60% { opacity: 1; }
+  100% { transform: rotate(var(--angle)) translateY(-60px) scale(1.2); opacity: 0; }
 }
 
 /* ── TIMELINE PALLINI più visibili ── */
